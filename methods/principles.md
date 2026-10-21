@@ -21,6 +21,6 @@ When AI is used to gather public discourse, the lines the machine draws move a l
 
 ## 판단이 숨지 않게 · Keeping judgment visible
 
-판단을 안 한다고 도구가 중립이 되는 건 아니다. 길이 기준, 모델, 규칙 하나하나가 이미 판단이다. 그래서 보고서마다 **「이 결과를 만든 선택」**을 모두 찍는다: 자료, 원문 공개 정책, 규칙 파일 이름·버전·지문(sha256)·패턴 전체, 표본, 임베딩 모델, 차원, 묶기 설정, 무작위 출발점, 차수 사슬, 채점자와 일치도.
+판단을 안 한다고 도구가 중립이 되는 건 아니다. 길이 기준, 모델, 규칙 하나하나가 이미 판단이다. 그래서 보고서마다 「**이 결과를 만든 선택**」을 모두 찍는다: 자료, 원문 공개 정책, 규칙 파일 이름·버전·지문(sha256)·패턴 전체, 표본, 임베딩 모델, 차원, 묶기 설정, 무작위 출발점, 차수 사슬, 채점자와 일치도.
 
 Refusing to interpret does not make a tool neutral — every default is a choice. So every report prints all the choices that produced it.
