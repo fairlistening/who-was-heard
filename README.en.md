@@ -9,7 +9,7 @@ YouTube and other new media have changed who gets heard. A handful of channels a
 
 "Broad listening" tools — Polis (2012), Talk to the City (2023), kouchou-ai (2025) — showed that AI can help read thousands of voices at once. This project asks the next question: **when you gather voices this way, how evenly did you listen?** *Broad* listening hears many; *fair* listening (고루듣기, *goru-deutgi*) also checks whose voices were dropped, drowned out, or reshaped by the machine.
 
-This toolkit grew out of the Korean investigative series *YouTube Tribalism* (Hankook Ilbo, 2026), which measured 14 million live-chat messages on Korean political YouTube channels. The series is linked below; this repository contains the method and code, written independently, not the articles.
+This toolkit grew out of the Korean interactive series *YouTube Tribalism* (Hankook Ilbo, 2026), which measured 14 million live-chat messages on Korean political YouTube channels. The series is linked below; this repository contains the method and code, written independently, not the articles.
 
 ## What it does
 
