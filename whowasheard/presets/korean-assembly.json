@@ -1,0 +1,24 @@
+{
+  "name": "korean-assembly",
+  "version": "1",
+  "description_ko": "대한민국 국회 회의록용. 의사진행·인사·절차 발언을 공론에서 뺀다. 공인의 공개 발언이므로 원문 공개(public).",
+  "description_en": "For Korean National Assembly minutes. Removes procedural, greeting and housekeeping talk. Public officials' on-record statements, so text policy is public.",
+  "text_policy": "public",
+  "min_chars": 40,
+  "dedup_prefix": 200,
+  "exclude_patterns": [
+    "질의(해|하여|를 해) 주시기 바랍니다",
+    "발언(해|하여) 주시기 바랍니다",
+    "수고하셨습니다",
+    "마이크",
+    "의사일정 제\\s*\\d+\\s*항",
+    "상정합니다",
+    "(가결|의결|부결)(되었음|되었습니다)",
+    "이의\\s*(가)?\\s*없으십니까",
+    "(정회|속개|산회|개의)(를|하겠습니다|합니다|하였습니다)",
+    "좌석을 정돈",
+    "성원이 되었으므로",
+    "(다음|이어서)는?\\s*[가-힣]{2,4}\\s*위원님"
+  ],
+  "extra_stopwords": ["위원장", "위원님", "의원님", "위원", "의원", "장관", "장관님", "차관", "질의", "답변", "발언", "위원회", "국회", "회의", "의사일정", "상정", "안건", "법률안", "일부개정법률안", "하셨습니까", "말씀드리겠습니다"]
+}

@@ -1,0 +1,4 @@
+phrase	level	reason	instead
+all media	ban	the database covers a fixed list of outlets, not all media	N outlets indexed in <database>
+hate speech %	caution	separate insults, stigma labels and identity-based hate before quoting a share	name the category and its definition
+AI found the camps	ban	camp labels were supplied by people, not discovered by the model	camp labels supplied by the newsroom, applied to the clusters

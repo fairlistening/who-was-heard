@@ -1,0 +1,50 @@
+{
+ "_note": "FICTIONAL example data generated for demonstration. 가상 예시 자료.",
+ "data": "survey.csv",
+ "codebook": "codebook.csv",
+ "weight": "wt",
+ "small_n": 30,
+ "groups": {
+  "All": [],
+  "Camp A": [
+   {
+    "col": "camp",
+    "in": [
+     1
+    ]
+   }
+  ],
+  "Camp B": [
+   {
+    "col": "camp",
+    "in": [
+     2
+    ]
+   }
+  ],
+  "No camp": [
+   {
+    "col": "camp",
+    "in": [
+     3
+    ]
+   }
+  ],
+  "Watch 3+ days a week": [
+   {
+    "col": "freq",
+    "in": [
+     3
+    ]
+   }
+  ],
+  "Never watch": [
+   {
+    "col": "freq",
+    "in": [
+     1
+    ]
+   }
+  ]
+ }
+}

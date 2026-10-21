@@ -1,0 +1,539 @@
+{
+  "name": "us-congress-r2",
+  "version": "1",
+  "description_ko": "미국 의회 회의록 2차 규칙 — 1차 결과(2026년 3월)를 보고 의사진행 묶음 17개를 「공론 아님」으로 고른 뒤, 초안 후보 38개 가운데 18개를 남기고 4개를 더했다. 600자 미만 발언에만 적용한다.",
+  "description_en": "Round-2 rules for the Congressional Record: after round 1 (March 2026), 17 procedural clusters were marked 'not discourse'; 18 of 38 drafted phrases were kept and 4 added. Applied only to turns under 600 characters.",
+  "text_policy": "public",
+  "min_chars": 30,
+  "dedup_prefix": 200,
+  "exclude_patterns": [
+    "(?i)speaker\\W+i\\W+ask\\W+unanimous",
+    "(?i)and\\W+extend\\W+their\\W+remarks",
+    "(?i)unanimous\\W+consent\\W+that\\W+the",
+    "(?i)the\\W+senate\\W+proceed\\W+to",
+    "(?i)move\\W+to\\W+suspend\\W+the",
+    "(?i)to\\W+the\\W+gentlewoman\\W+from",
+    "(?i)minutes\\W+to\\W+the\\W+gentlewoman",
+    "(?i)morning\\W+business",
+    "(?i)quorum\\W+call",
+    "(?i)waive\\W+the\\W+mandatory\\W+quorum",
+    "(?i)the\\W+clerk\\W+read\\W+the",
+    "(?i)no\\W+further",
+    "(?i)stand\\W+adjourned\\W+under\\W+the",
+    "(?i)not\\W+voting",
+    "(?i)roll\\W+call\\W+no",
+    "(?i)i\\W+would\\W+have\\W+voted",
+    "(?i)to\\W+reconsider\\W+be\\W+considered",
+    "(?i)consent\\W+that\\W+all\\W+members",
+    "(?i)yield\\W+to\\W+the\\W+gentleman\\W+from",
+    "(?i)minutes\\W+to\\W+the\\W+gentleman\\W+from",
+    "(?i)i\\W+yield\\W+back\\W+the\\W+balance\\W+of\\W+my\\W+time",
+    "(?i)i\\W+reserve\\W+the\\W+balance\\W+of\\W+my\\W+time"
+  ],
+  "extra_stopwords": [],
+  "_derived_from": {
+    "round": 1,
+    "previous_fingerprint": "d250b82ce439",
+    "reviewers": [
+      "demo (one reviewer, written while building the tool)"
+    ],
+    "kappa": null,
+    "percent_agreement": null,
+    "policy": null,
+    "split": [],
+    "excluded_clusters": [
+      {
+        "id": 12,
+        "words": [
+          "gentleman",
+          "yield",
+          "minutes",
+          "speaker"
+        ],
+        "n": 116
+      },
+      {
+        "id": 7,
+        "words": [
+          "senator",
+          "question",
+          "president",
+          "yield"
+        ],
+        "n": 73
+      },
+      {
+        "id": 18,
+        "words": [
+          "motion",
+          "cloture",
+          "desk",
+          "president"
+        ],
+        "n": 55
+      },
+      {
+        "id": 2,
+        "words": [
+          "extraneous",
+          "revise",
+          "material",
+          "extend"
+        ],
+        "n": 47
+      },
+      {
+        "id": 20,
+        "words": [
+          "proceed",
+          "consideration",
+          "unanimous",
+          "consent"
+        ],
+        "n": 43
+      },
+      {
+        "id": 16,
+        "words": [
+          "land",
+          "section",
+          "acres",
+          "approximately"
+        ],
+        "n": 39
+      },
+      {
+        "id": 13,
+        "words": [
+          "gentlewoman",
+          "yield",
+          "her",
+          "speaker"
+        ],
+        "n": 38
+      },
+      {
+        "id": 6,
+        "words": [
+          "session",
+          "senate",
+          "march",
+          "meet"
+        ],
+        "n": 37
+      },
+      {
+        "id": 17,
+        "words": [
+          "quorum",
+          "unanimous",
+          "consent",
+          "ask"
+        ],
+        "n": 33
+      },
+      {
+        "id": 22,
+        "words": [
+          "shall",
+          "available",
+          "act",
+          "section"
+        ],
+        "n": 30
+      },
+      {
+        "id": 4,
+        "words": [
+          "adjourned",
+          "further",
+          "previous",
+          "order"
+        ],
+        "n": 27
+      },
+      {
+        "id": 21,
+        "words": [
+          "balance",
+          "yield",
+          "speaker",
+          "urge"
+        ],
+        "n": 26
+      },
+      {
+        "id": 0,
+        "words": [
+          "scott",
+          "nays",
+          "van",
+          "smith"
+        ],
+        "n": 23
+      },
+      {
+        "id": 3,
+        "words": [
+          "roll",
+          "yea",
+          "call",
+          "present"
+        ],
+        "n": 23
+      },
+      {
+        "id": 19,
+        "words": [
+          "agreed",
+          "considered",
+          "reconsider",
+          "unanimous"
+        ],
+        "n": 22
+      },
+      {
+        "id": 1,
+        "words": [
+          "revise",
+          "extend",
+          "remarks",
+          "legislative"
+        ],
+        "n": 18
+      },
+      {
+        "id": 9,
+        "words": [
+          "gentleman",
+          "speaker",
+          "prediction",
+          "event"
+        ],
+        "n": 17
+      }
+    ],
+    "candidates": [
+      {
+        "phrase": "the desk",
+        "pattern": "(?i)the\\W+desk",
+        "cluster": 18,
+        "cover_excluded": 0.327,
+        "cover_other": 0.0119
+      },
+      {
+        "phrase": "speaker i ask unanimous",
+        "pattern": "(?i)speaker\\W+i\\W+ask\\W+unanimous",
+        "cluster": 2,
+        "cover_excluded": 1.0,
+        "cover_other": 0.0094
+      },
+      {
+        "phrase": "extend their remarks and",
+        "pattern": "(?i)extend\\W+their\\W+remarks\\W+and",
+        "cluster": 2,
+        "cover_excluded": 0.979,
+        "cover_other": 0.0
+      },
+      {
+        "phrase": "and extend their remarks",
+        "pattern": "(?i)and\\W+extend\\W+their\\W+remarks",
+        "cluster": 2,
+        "cover_excluded": 0.979,
+        "cover_other": 0.0
+      },
+      {
+        "phrase": "president i ask",
+        "pattern": "(?i)president\\W+i\\W+ask",
+        "cluster": 20,
+        "cover_excluded": 0.791,
+        "cover_other": 0.0111
+      },
+      {
+        "phrase": "unanimous consent that the",
+        "pattern": "(?i)unanimous\\W+consent\\W+that\\W+the",
+        "cluster": 20,
+        "cover_excluded": 0.767,
+        "cover_other": 0.0196
+      },
+      {
+        "phrase": "the senate proceed to",
+        "pattern": "(?i)the\\W+senate\\W+proceed\\W+to",
+        "cluster": 20,
+        "cover_excluded": 0.721,
+        "cover_other": 0.0179
+      },
+      {
+        "phrase": "section 1",
+        "pattern": "(?i)section\\W+1",
+        "cluster": 16,
+        "cover_excluded": 0.641,
+        "cover_other": 0.0128
+      },
+      {
+        "phrase": "suspend the rules and",
+        "pattern": "(?i)suspend\\W+the\\W+rules\\W+and",
+        "cluster": 16,
+        "cover_excluded": 0.641,
+        "cover_other": 0.0136
+      },
+      {
+        "phrase": "move to suspend the",
+        "pattern": "(?i)move\\W+to\\W+suspend\\W+the",
+        "cluster": 16,
+        "cover_excluded": 0.641,
+        "cover_other": 0.0136
+      },
+      {
+        "phrase": "to the gentlewoman from",
+        "pattern": "(?i)to\\W+the\\W+gentlewoman\\W+from",
+        "cluster": 13,
+        "cover_excluded": 0.947,
+        "cover_other": 0.0043
+      },
+      {
+        "phrase": "minutes to the gentlewoman",
+        "pattern": "(?i)minutes\\W+to\\W+the\\W+gentlewoman",
+        "cluster": 13,
+        "cover_excluded": 0.421,
+        "cover_other": 0.0026
+      },
+      {
+        "phrase": "yield to",
+        "pattern": "(?i)yield\\W+to",
+        "cluster": 13,
+        "cover_excluded": 0.316,
+        "cover_other": 0.0128
+      },
+      {
+        "phrase": "morning business",
+        "pattern": "(?i)morning\\W+business",
+        "cluster": 6,
+        "cover_excluded": 0.622,
+        "cover_other": 0.0
+      },
+      {
+        "phrase": "leaders be",
+        "pattern": "(?i)leaders\\W+be",
+        "cluster": 6,
+        "cover_excluded": 0.541,
+        "cover_other": 0.0
+      },
+      {
+        "phrase": "and the senate",
+        "pattern": "(?i)and\\W+the\\W+senate",
+        "cluster": 6,
+        "cover_excluded": 0.541,
+        "cover_other": 0.0145
+      },
+      {
+        "phrase": "ask unanimous consent to",
+        "pattern": "(?i)ask\\W+unanimous\\W+consent\\W+to",
+        "cluster": 17,
+        "cover_excluded": 0.455,
+        "cover_other": 0.0085
+      },
+      {
+        "phrase": "quorum call",
+        "pattern": "(?i)quorum\\W+call",
+        "cluster": 17,
+        "cover_excluded": 0.424,
+        "cover_other": 0.0009
+      },
+      {
+        "phrase": "waive the mandatory quorum",
+        "pattern": "(?i)waive\\W+the\\W+mandatory\\W+quorum",
+        "cluster": 17,
+        "cover_excluded": 0.333,
+        "cover_other": 0.0
+      },
+      {
+        "phrase": "house resolution",
+        "pattern": "(?i)house\\W+resolution",
+        "cluster": 22,
+        "cover_excluded": 0.533,
+        "cover_other": 0.0
+      },
+      {
+        "phrase": "the clerk read the",
+        "pattern": "(?i)the\\W+clerk\\W+read\\W+the",
+        "cluster": 22,
+        "cover_excluded": 0.467,
+        "cover_other": 0.0145
+      },
+      {
+        "phrase": "for its",
+        "pattern": "(?i)for\\W+its",
+        "cluster": 22,
+        "cover_excluded": 0.467,
+        "cover_other": 0.0145
+      },
+      {
+        "phrase": "no further",
+        "pattern": "(?i)no\\W+further",
+        "cluster": 4,
+        "cover_excluded": 0.889,
+        "cover_other": 0.0034
+      },
+      {
+        "phrase": "adjourned under the previous",
+        "pattern": "(?i)adjourned\\W+under\\W+the\\W+previous",
+        "cluster": 4,
+        "cover_excluded": 0.704,
+        "cover_other": 0.0
+      },
+      {
+        "phrase": "stand adjourned under the",
+        "pattern": "(?i)stand\\W+adjourned\\W+under\\W+the",
+        "cluster": 4,
+        "cover_excluded": 0.704,
+        "cover_other": 0.0
+      },
+      {
+        "phrase": "legislation and i",
+        "pattern": "(?i)legislation\\W+and\\W+i",
+        "cluster": 21,
+        "cover_excluded": 0.423,
+        "cover_other": 0.0119
+      },
+      {
+        "phrase": "as follows",
+        "pattern": "(?i)as\\W+follows",
+        "cluster": 0,
+        "cover_excluded": 1.0,
+        "cover_other": 0.0187
+      },
+      {
+        "phrase": "not voting",
+        "pattern": "(?i)not\\W+voting",
+        "cluster": 0,
+        "cover_excluded": 0.957,
+        "cover_other": 0.006
+      },
+      {
+        "phrase": "marshall mcconnell mccormick",
+        "pattern": "(?i)marshall\\W+mcconnell\\W+mccormick",
+        "cluster": 0,
+        "cover_excluded": 0.87,
+        "cover_other": 0.0
+      },
+      {
+        "phrase": "roll call no",
+        "pattern": "(?i)roll\\W+call\\W+no",
+        "cluster": 3,
+        "cover_excluded": 0.783,
+        "cover_other": 0.0
+      },
+      {
+        "phrase": "i been",
+        "pattern": "(?i)i\\W+been",
+        "cluster": 3,
+        "cover_excluded": 0.783,
+        "cover_other": 0.0
+      },
+      {
+        "phrase": "i would have voted",
+        "pattern": "(?i)i\\W+would\\W+have\\W+voted",
+        "cluster": 3,
+        "cover_excluded": 0.783,
+        "cover_other": 0.0009
+      },
+      {
+        "phrase": "reconsider be considered made",
+        "pattern": "(?i)reconsider\\W+be\\W+considered\\W+made",
+        "cluster": 19,
+        "cover_excluded": 0.773,
+        "cover_other": 0.0187
+      },
+      {
+        "phrase": "to reconsider be considered",
+        "pattern": "(?i)to\\W+reconsider\\W+be\\W+considered",
+        "cluster": 19,
+        "cover_excluded": 0.773,
+        "cover_other": 0.0187
+      },
+      {
+        "phrase": "considered made and laid",
+        "pattern": "(?i)considered\\W+made\\W+and\\W+laid",
+        "cluster": 19,
+        "cover_excluded": 0.773,
+        "cover_other": 0.0187
+      },
+      {
+        "phrase": "unanimous consent that all",
+        "pattern": "(?i)unanimous\\W+consent\\W+that\\W+all",
+        "cluster": 1,
+        "cover_excluded": 1.0,
+        "cover_other": 0.0
+      },
+      {
+        "phrase": "consent that all members",
+        "pattern": "(?i)consent\\W+that\\W+all\\W+members",
+        "cluster": 1,
+        "cover_excluded": 1.0,
+        "cover_other": 0.0
+      },
+      {
+        "phrase": "revise and extend their",
+        "pattern": "(?i)revise\\W+and\\W+extend\\W+their",
+        "cluster": 1,
+        "cover_excluded": 1.0,
+        "cover_other": 0.0
+      }
+    ],
+    "note": "cover_excluded = 고른 묶음 글 가운데 이 문구가 든 몫 · cover_other = 나머지 묶음에서의 몫",
+    "human_edits": {
+      "kept": [
+        "speaker i ask unanimous",
+        "and extend their remarks",
+        "unanimous consent that the",
+        "the senate proceed to",
+        "move to suspend the",
+        "to the gentlewoman from",
+        "minutes to the gentlewoman",
+        "morning business",
+        "quorum call",
+        "waive the mandatory quorum",
+        "the clerk read the",
+        "no further",
+        "stand adjourned under the",
+        "not voting",
+        "roll call no",
+        "i would have voted",
+        "to reconsider be considered",
+        "consent that all members"
+      ],
+      "added": [
+        "yield to the gentleman from",
+        "minutes to the gentleman from",
+        "i yield back the balance of my time",
+        "i reserve the balance of my time"
+      ],
+      "dropped": [
+        "the desk",
+        "extend their remarks and",
+        "president i ask",
+        "section 1",
+        "suspend the rules and",
+        "yield to",
+        "leaders be",
+        "and the senate",
+        "ask unanimous consent to",
+        "house resolution",
+        "for its",
+        "adjourned under the previous",
+        "legislation and i",
+        "as follows",
+        "marshall mcconnell mccormick",
+        "i been",
+        "reconsider be considered made",
+        "considered made and laid",
+        "unanimous consent that all",
+        "revise and extend their"
+      ],
+      "why": "dropped phrases also appear in substantive speeches (e.g. 'president i ask', 'yield to', 'section 1', 'for its'); length cap so a single phrase inside a long speech cannot remove the speech"
+    }
+  },
+  "pattern_max_chars": 600,
+  "embed_max_chars": 1000
+}

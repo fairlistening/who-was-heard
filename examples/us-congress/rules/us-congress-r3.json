@@ -1,0 +1,280 @@
+{
+  "name": "us-congress-r3",
+  "version": "3",
+  "description_ko": "2026년 3월 미국 의회 회의록 시연 3차 규칙: 2차 규칙 + 2차에서도 남은 절차(규칙 정지 동의와 법안 원문, 위원회 회의 허가, 토론 종결 동의, 짧은 의사 진행).",
+  "description_en": "Round 3 rules for the March 2026 Congressional Record demo: round-2 rules plus phrases for procedure still visible in round 2 (suspension motions with bill text, committee meeting authorizations, cloture filings, short floor exchanges).",
+  "text_policy": "public",
+  "min_chars": 30,
+  "embed_max_chars": 1000,
+  "exclude_values": {},
+  "dedup_prefix": 200,
+  "exclude_patterns": [
+    {
+      "pattern": "(?i)speaker\\W+i\\W+ask\\W+unanimous",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)and\\W+extend\\W+their\\W+remarks",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)unanimous\\W+consent\\W+that\\W+the",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)the\\W+senate\\W+proceed\\W+to",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)move\\W+to\\W+suspend\\W+the",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)to\\W+the\\W+gentlewoman\\W+from",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)minutes\\W+to\\W+the\\W+gentlewoman",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)morning\\W+business",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)quorum\\W+call",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)waive\\W+the\\W+mandatory\\W+quorum",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)the\\W+clerk\\W+read\\W+the",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)no\\W+further",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)stand\\W+adjourned\\W+under\\W+the",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)not\\W+voting",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)roll\\W+call\\W+no",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)i\\W+would\\W+have\\W+voted",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)to\\W+reconsider\\W+be\\W+considered",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)consent\\W+that\\W+all\\W+members",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)yield\\W+to\\W+the\\W+gentleman\\W+from",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)minutes\\W+to\\W+the\\W+gentleman\\W+from",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)i\\W+yield\\W+back\\W+the\\W+balance\\W+of\\W+my\\W+time",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)i\\W+reserve\\W+the\\W+balance\\W+of\\W+my\\W+time",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)suspend\\W+the\\W+rules\\W+and",
+      "max_chars": 0
+    },
+    {
+      "pattern": "(?i)authorized\\W+to\\W+meet\\W+during",
+      "max_chars": 0
+    },
+    {
+      "pattern": "(?i)there\\W+being\\W+no\\W+objection",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)printed\\W+in\\W+the",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)cloture\\W+motion",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)demand\\W+a\\W+recorded\\W+vote",
+      "max_chars": 600
+    },
+    {
+      "pattern": "(?i)will\\W+the\\W+(senator|gentleman|gentlewoman)\\W+yield",
+      "max_chars": 300
+    }
+  ],
+  "extra_stopwords": [],
+  "_derived_from": {
+    "round": 2,
+    "base_preset": "us-congress-r2",
+    "previous_fingerprint": "b4c3b95f11de",
+    "reviewers": [],
+    "kappa": null,
+    "percent_agreement": null,
+    "policy": null,
+    "split": [],
+    "excluded_clusters": [
+      {
+        "id": 2,
+        "words": [
+          "session",
+          "senate",
+          "committee",
+          "meet"
+        ],
+        "n": 179
+      },
+      {
+        "id": 4,
+        "words": [
+          "motion",
+          "president",
+          "cloture",
+          "desk"
+        ],
+        "n": 74
+      },
+      {
+        "id": 8,
+        "words": [
+          "land",
+          "act",
+          "section",
+          "acres"
+        ],
+        "n": 60
+      },
+      {
+        "id": 5,
+        "words": [
+          "shall",
+          "section",
+          "under",
+          "act"
+        ],
+        "n": 40
+      },
+      {
+        "id": 0,
+        "words": [
+          "scott",
+          "nays",
+          "van",
+          "smith"
+        ],
+        "n": 23
+      }
+    ],
+    "candidates": [
+      {
+        "phrase": "section 1",
+        "pattern": "(?i)section\\W+1",
+        "cluster": 8,
+        "cover_excluded": 0.467,
+        "cover_other": 0.0113
+      },
+      {
+        "phrase": "suspend the rules and",
+        "pattern": "(?i)suspend\\W+the\\W+rules\\W+and",
+        "cluster": 8,
+        "cover_excluded": 0.467,
+        "cover_other": 0.0121
+      },
+      {
+        "phrase": "clerk read the title",
+        "pattern": "(?i)clerk\\W+read\\W+the\\W+title",
+        "cluster": 8,
+        "cover_excluded": 0.467,
+        "cover_other": 0.0121
+      },
+      {
+        "phrase": "as follows",
+        "pattern": "(?i)as\\W+follows",
+        "cluster": 5,
+        "cover_excluded": 0.525,
+        "cover_other": 0.0178
+      },
+      {
+        "phrase": "printed in the",
+        "pattern": "(?i)printed\\W+in\\W+the",
+        "cluster": 5,
+        "cover_excluded": 0.4,
+        "cover_other": 0.0032
+      },
+      {
+        "phrase": "there being no objection",
+        "pattern": "(?i)there\\W+being\\W+no\\W+objection",
+        "cluster": 5,
+        "cover_excluded": 0.325,
+        "cover_other": 0.0024
+      },
+      {
+        "phrase": "not voting",
+        "pattern": "(?i)not\\W+voting",
+        "cluster": 0,
+        "cover_excluded": 0.957,
+        "cover_other": 0.0057
+      },
+      {
+        "phrase": "marshall mcconnell mccormick",
+        "pattern": "(?i)marshall\\W+mcconnell\\W+mccormick",
+        "cluster": 0,
+        "cover_excluded": 0.87,
+        "cover_other": 0.0
+      },
+      {
+        "phrase": "blumenthal blunt rochester",
+        "pattern": "(?i)blumenthal\\W+blunt\\W+rochester",
+        "cluster": 0,
+        "cover_excluded": 0.87,
+        "cover_other": 0.0
+      }
+    ],
+    "note": "cover_excluded = 고른 묶음 글 가운데 이 문구가 든 몫 · cover_other = 나머지 묶음에서의 몫"
+  },
+  "human_edits": {
+    "by": "tool author (single demo reviewer — not an independent second coder)",
+    "kept_from_draft": [
+      "suspend the rules and (also covers 'clerk read the title' — same turns)",
+      "there being no objection (capped at 600 chars)",
+      "printed in the (capped at 600 chars)"
+    ],
+    "dropped_from_draft": {
+      "section 1": "appears in 1.1% of other texts — speeches that cite a section",
+      "as follows": "1.8% of other texts",
+      "clerk read the title": "duplicate of 'suspend the rules and'",
+      "not voting": "already in round-2 rules",
+      "marshall mcconnell mccormick / blumenthal blunt rochester": "name lists from one roll call; fragile, and roll calls are already caught by 'not voting'"
+    },
+    "added_by_hand": {
+      "authorized to meet during": "cluster 2 — committee meeting requests; no draft candidate passed the thresholds",
+      "cloture motion": "cluster 4",
+      "demand a recorded vote": "cluster 2",
+      "will the senator/gentleman/gentlewoman yield": "cluster 2, capped at 300 chars"
+    },
+    "caps_reason": "'printed in the' and 'there being no objection' also occur in long substantive speeches that insert letters into the Record (median length 4,537 and 3,452 chars), so they only remove short turns."
+  }
+}

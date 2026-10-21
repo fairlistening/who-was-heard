@@ -1,0 +1,4 @@
+* text=auto
+*.command text eol=lf
+*.py text eol=lf
+*.pyw text eol=lf

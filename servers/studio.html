@@ -1,0 +1,565 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Who Was Heard Analysis</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fffefb;--fg:#1d1c1a;--mut:#6b675f;--line:#e2ded4;--acc:#2a6f5b;--accbg:#e3efe9;--code:#f1efe8;--warn:#9a3b1c;--warnbg:#f8e9e2;--note:#7a5a10;--notebg:#f7efd9;
+--c1:#2a78d6;--c2:#eb6834;--c3:#1baf7a;--c4:#8a63d2;--c5:#c2417a;--c6:#7a8a1f;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--card:#1f1e1b;--fg:#ecebe6;--mut:#a29e94;--line:#34322d;--acc:#6cc3a3;--accbg:#1e3029;--code:#262521;--warn:#f08a62;--warnbg:#3a2219;--note:#e7c46f;--notebg:#352c16;
+--c1:#3987e5;--c2:#d95926;--c3:#199e70;--c4:#9b7ae0;--c5:#d0588c;--c6:#9aab2e;color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+.totop{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:42px;height:42px;padding:0;border-radius:50%;box-shadow:0 2px 10px rgba(0,0,0,.18);font-size:18px;line-height:1;z-index:5;display:none}.totop.on{display:block}
+a{color:var(--acc)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 system-ui,-apple-system,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif}
+main{max-width:980px;margin:0 auto;padding-block:24px 96px;padding-inline:16px;display:grid;gap:20px}
+main>*,section{min-width:0}
+html[lang=ko] .l-en,html[lang=en] .l-ko{display:none}
+h1{font-size:22px;margin:0}
+h2{font-size:17px;margin:0;display:flex;gap:10px;align-items:center}
+h2 .no{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--acc);color:var(--card);font-size:13px}
+h3{font-size:14.5px;margin:0}
+p{margin:0}
+.mut{color:var(--mut)}.small{font-size:13px}
+.top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.lang button{border:0;border-radius:0;padding:5px 12px}
+.lang button.on{background:var(--fg);color:var(--bg)}
+.banner{border-radius:10px;padding:10px 14px;font-size:13.5px}
+.banner.note{background:var(--notebg);color:var(--note)}
+.banner.err{background:var(--warnbg);color:var(--warn);white-space:pre-wrap;overflow-wrap:anywhere}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:14px}
+section.off{opacity:.55}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:7px;padding:6px 12px;font-size:13.5px}
+button:hover:not(:disabled){border-color:var(--acc)}
+button:disabled{opacity:.45;cursor:default}
+button.pri{background:var(--acc);border-color:var(--acc);color:var(--card);font-weight:600}
+button.danger{color:var(--warn);border-color:var(--warn)}
+input,select,textarea{font:inherit;font-size:14px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:6px 9px;max-width:100%}
+input[type=checkbox],input[type=radio]{accent-color:var(--acc)}
+label{display:inline-flex;gap:6px;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.field{display:grid;gap:4px;min-width:0}
+.field>span{font-size:12.5px;color:var(--mut)}
+.field select,.field textarea,.field input:not([type=checkbox]):not([type=radio]){width:100%}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-weight:500}
+td.num,th.num{text-align:right}
+code,.mono{font:12.5px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+details summary{cursor:pointer;color:var(--mut);font-size:13.5px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;border:1px solid var(--line);border-radius:999px;padding:2px 9px;background:var(--bg)}
+.chip.on{border-color:var(--acc);color:var(--acc)}
+.rounds{display:grid;gap:10px}
+.rc{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:8px}
+.rc.sel{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.kv{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px}
+.kv b{font-variant-numeric:tabular-nums}
+.res{display:grid;gap:10px}.res h3{margin:0}.resg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.resg>div{min-width:0}
+a.btn{display:inline-block;text-decoration:none;font:inherit;font-size:13.5px;padding:7px 14px;border-radius:7px;border:1px solid var(--line);color:var(--fg);background:var(--card)}a.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--card);font-weight:600}
+.job{display:grid;gap:6px;border:1px dashed var(--acc);border-radius:10px;padding:12px}
+.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc);transition:width .4s}
+.wait{color:var(--acc);font-weight:600}
+.wait::before{content:"";display:inline-block;width:.7em;height:.7em;margin-right:.45em;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;vertical-align:-.05em;animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bar.ind i{width:30%!important;animation:ind 1.3s ease-in-out infinite}
+@keyframes ind{0%{transform:translateX(-100%)}100%{transform:translateX(340%)}}
+@media (prefers-reduced-motion:reduce){.wait::before{animation:none}.bar.ind i{animation:none;width:100%!important;opacity:.5}}
+.clist{display:grid;gap:12px}
+.cl{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:8px;min-width:0}
+.cl.ex{background:var(--warnbg);border-color:var(--warn)}
+.clh{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
+.clh .meta{font-size:12.5px;color:var(--mut)}
+.words{font-weight:600}
+.comp{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--line);max-width:260px}
+.comp i{display:block;height:100%}
+.q{font-size:13.5px;border-left:3px solid var(--line);padding:2px 0 2px 10px;overflow-wrap:anywhere}
+.q .sp{font-size:12px;color:var(--mut)}
+.votes{font-size:12px;color:var(--mut)}
+.more{display:grid;gap:6px}.more .moretx{display:grid;gap:6px}.moreb{justify-self:start}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12.5px;color:var(--mut)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;width:max-content;max-width:100%}
+.seg button{border:0;border-radius:0;padding:6px 14px}
+.seg button.on{background:var(--acc);color:var(--card);font-weight:600}
+textarea{width:100%;min-height:90px;resize:vertical}
+.field.wide{grid-column:1/-1}
+.danger.arm{background:var(--warn);color:var(--card)}
+.sticky{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 0 2px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pat td{padding:4px 6px}
+.pat input.p{width:100%;min-width:220px}
+.pat input.m{width:80px}
+.tag{font-size:11.5px;color:var(--mut)}
+.ok{color:var(--acc)}.bad{color:var(--warn)}
+@media (max-width:600px){.clh{display:grid}}
+</style></head><body><main>
+
+<div class="top">
+ <div class="row"><h1 data-k="title"></h1><a href="/" class="small" data-k="back"></a></div>
+ <div class="lang" role="group" aria-label="Language"><button data-l="ko">한국어</button><button data-l="en">English</button></div>
+</div>
+<div class="banner note" data-k="privacy"></div>
+<div class="banner err" id="err" hidden></div>
+
+<!-- 프로젝트 -->
+<section id="s0">
+ <h2 data-k="proj_h"></h2>
+ <div class="row">
+  <select id="projSel"></select>
+  <input id="newName" data-ph="new_ph" style="min-width:200px">
+  <button id="newBtn" data-k="new_btn"></button>
+  <button id="openDir" data-k="open_dir" hidden></button>
+ </div>
+ <p class="mut small" data-k="auto_proj"></p>
+ <p class="mut small"><span data-k="work_at"></span> <code id="workRoot"></code></p>
+</section>
+
+<!-- 모델 -->
+<section id="sM">
+ <details id="mdlBox"><summary><b data-k="mdl_h"></b> <span id="mdlState" class="small"></span></summary>
+  <div style="display:grid;gap:12px;margin-top:12px">
+   <p class="small"><a id="mdlName" target="_blank" rel="noopener"><code></code></a> <span class="mut" id="mdlMeta"></span></p>
+   <div class="field"><span data-k="mdl_dir"></span><div class="row"><input id="mdlDir" class="mono" style="flex:1 1 240px;min-width:0"><button id="mdlDirBtn" data-k="mdl_dir_save"></button><button id="mdlDirDef" data-k="mdl_dir_def"></button></div>
+    <span class="small mut" data-k="mdl_dir_note"></span></div>
+   <div class="row"><button class="pri" id="mdlDl" data-k="mdl_dl_now"></button><button class="danger" id="mdlDel" data-k="mdl_del"></button><span class="small" id="mdlMsg"></span></div>
+  </div>
+ </details>
+</section>
+
+<!-- 1 자료 -->
+<section id="s1" class="off">
+ <h2><span class="no">1</span><span data-k="s1"></span></h2>
+ <p class="mut small" data-k="s1_d"></p>
+ <div class="seg" role="tablist"><button class="sg on" data-m="file" data-k="m_file"></button><button class="sg" data-m="fetch" data-k="m_fetch"></button></div>
+ <div class="grid2" id="mFile">
+  <div class="field"><span data-k="upload"></span><input type="file" id="file" accept=".csv,.tsv,.xlsx,.xlsm"></div>
+  <div class="field"><span data-k="bypath"></span><div class="row"><input id="pathIn" style="flex:1;min-width:0" placeholder="D:\data\comments.csv"><button id="pathBtn" data-k="load"></button></div></div>
+ </div>
+ <div id="mFetch" hidden style="display:grid;gap:12px">
+  <div class="field"><span data-k="src"></span><select id="srcSel"></select></div>
+  <p class="small mut" id="srcDesc"></p>
+  <div class="grid2" id="srcForm"></div>
+  <div class="row"><button class="pri" id="fetchBtn" data-k="fetch"></button></div>
+ </div>
+ <div class="job" id="fjob" hidden role="status" aria-live="polite"><div class="row"><b id="fjStage"></b><span class="small" id="fjCount"></span><span class="mut small" id="fjTime"></span><button class="danger" id="fstopBtn" data-k="fstop" hidden style="margin-left:auto"></button></div><div class="bar" id="fjBarW"><i id="fjBar" style="width:5%"></i></div><p class="mut small" id="fjDetail" style="overflow-wrap:anywhere"></p></div>
+ <p class="small ok" id="fetchedNote"></p>
+ <div id="colsBox" hidden>
+  <p class="small"><b id="fname"></b> · <span id="nrows"></span></p>
+  <div class="tw"><table id="colsTbl"></table></div>
+ </div>
+</section>
+
+<!-- 2 설정 -->
+<section id="s2" class="off">
+ <h2><span class="no">2</span><span data-k="s2"></span></h2>
+ <p class="small wait" id="s2wait" data-k="s2_wait" hidden></p>
+ <div class="grid2">
+  <div class="field"><span data-k="f_text"></span><select id="fText"></select></div>
+  <div class="field"><span data-k="f_group"></span><select id="fGroup"></select></div>
+  <div class="field"><span data-k="f_speaker"></span><select id="fSpeaker"></select></div>
+ </div>
+ <div id="gvals" class="small mut"></div>
+ <div class="field"><span data-k="f_context"></span><div class="chips" id="fContext"></div></div>
+ <div class="field"><span data-k="f_policy"></span>
+  <label><input type="radio" name="pol" value="private" checked> <span data-k="pol_private"></span></label>
+  <label><input type="radio" name="pol" value="quotes"> <span data-k="pol_quotes"></span></label>
+  <label><input type="radio" name="pol" value="public"> <span data-k="pol_public"></span></label>
+  <p class="mut small" data-k="pol_note"></p>
+ </div>
+ <details><summary data-k="adv"></summary>
+  <div class="grid2" style="margin-top:10px">
+   <div class="field"><span data-k="f_title"></span><input id="fTitle"></div>
+   <div class="field"><span data-k="f_subject"></span><input id="fSubject"></div>
+   <div class="field"><span data-k="f_pergroup"></span><input id="fPer" type="number" min="0" value="0"></div>
+   <div class="field"><span data-k="f_minchars"></span><input id="fMin" type="number" min="0" value="5"></div>
+   <div class="field"><span data-k="f_mingroup"></span><input id="fMinG" type="number" min="0" value="0"></div>
+   <div class="field"><span data-k="f_embed"></span><input id="fEmb" type="number" min="50" placeholder="400"></div>
+   <div class="field"><span data-k="f_sel"></span><select id="fSel"><option value="eom">eom</option><option value="leaf">leaf</option></select></div>
+   <div class="field"><span data-k="f_mcs"></span><input id="fMcs" type="number" min="2" data-ph="auto"></div>
+  </div>
+  <div class="field" style="margin-top:10px"><span data-k="f_drop"></span>
+   <div class="row"><select id="dCol"></select><select id="dVal"></select><button id="dAdd" data-k="add"></button></div>
+   <div class="chips" id="dList"></div>
+  </div>
+ </details>
+ <p class="banner note" id="colWarn" hidden></p>
+ <p class="banner note" id="bigWarn" hidden></p>
+ <div class="row"><button class="pri" id="saveSetup" data-k="save_setup"></button><span id="setupMsg" class="small"></span></div>
+</section>
+
+<!-- 3 차수 -->
+<section id="s3" class="off">
+ <h2><span class="no">3</span><span data-k="s3"></span></h2>
+ <p class="mut small" data-k="s3_d"></p>
+ <div class="rounds" id="rounds"></div>
+ <div class="job" id="job" hidden role="status" aria-live="polite"><div class="row"><b id="jobStage"></b><span class="small" id="jobCount"></span><span class="mut small" id="jobTime"></span><button class="danger" id="jobStop" data-k="jstop" hidden style="margin-left:auto"></button></div><div class="bar"><i id="jobBar" style="width:5%"></i></div><p class="small" id="jobEta" hidden></p><p class="mut small" id="jobTip" data-k="job_tip" hidden></p><p class="small" id="jobModel" hidden style="overflow-wrap:anywhere"></p><p class="mut small" data-k="job_note"></p></div>
+ <div class="row" id="runRow"><select id="runRules"></select><button class="pri" id="runBtn"></button><a id="goRes" href="#s6" class="small" data-k="res_go" hidden></a></div>
+</section>
+
+<!-- 4 판단 -->
+<section id="s4" class="off">
+ <h2><span class="no">4</span><span data-k="s4"></span> <span id="s4r" class="mut small"></span></h2>
+ <p class="mut small" data-k="s4_d"></p>
+ <div class="row">
+  <div class="field"><span data-k="reviewer"></span><input id="rvName" style="width:160px"></div>
+  <div class="field"><span data-k="others"></span><div class="chips" id="rvList"></div></div>
+ </div>
+ <div id="agr" class="small"></div>
+ <div class="legend" id="legend"></div>
+ <div class="clist" id="clist"></div>
+ <div class="sticky"><button class="pri" id="saveRv" data-k="save_rv"></button><button id="applyLb" data-k="apply_lb"></button><span id="rvMsg" class="small"></span></div>
+</section>
+
+<!-- 5 규칙 -->
+<section id="s5" class="off">
+ <h2><span class="no">5</span><span data-k="s5"></span></h2>
+ <p class="mut small" data-k="s5_d"></p>
+ <div class="row">
+  <label><input type="radio" name="pp" value="majority" checked> <span data-k="pp_major"></span></label>
+  <label><input type="radio" name="pp" value="all"> <span data-k="pp_all"></span></label>
+  <button id="draftBtn" data-k="draft"></button>
+ </div>
+ <div id="draftInfo" class="small"></div>
+ <div class="tw"><table class="pat" id="patTbl"></table></div>
+ <div class="row"><button id="addPat" data-k="add_pat" hidden></button></div>
+ <div class="row" id="saveRulesRow" hidden><button class="pri" id="saveRules"></button><span id="rulesMsg" class="small"></span></div>
+</section>
+
+<section id="s6" class="off">
+ <h2><span class="no">6</span><span data-k="s6"></span></h2>
+ <p class="mut small" data-k="s6_d"></p>
+ <div id="resBox"></div>
+</section>
+</main>
+<script>
+var TOKEN="{{TOKEN}}";
+var T={ko:{
+title:"Who Was Heard 분석",back:"← MCP 안내",privacy:"이 화면에는 원문이 보입니다. 이 PC 안에서만 열리고 밖으로 나가지 않습니다. 화면 공유·캡처에 주의하세요.",
+proj_h:"프로젝트",new_ph:"새 프로젝트 이름",new_btn:"만들기",open_dir:"작업 폴더 열기",auto_proj:"프로젝트를 따로 안 만들어도 됩니다. ①에서 자료를 넣으면 이름 칸에 적은 이름(비우면 파일·출처 이름)으로 새 프로젝트가 만들어집니다.",work_at:"작업 폴더:",none_proj:"— 프로젝트를 고르거나 만드세요 —",
+s1:"자료 넣기",s1_d:"글이 든 표(CSV·TSV·XLSX)를 올리거나 파일 경로를 적습니다. 「직접 받기」를 고르면 국회·미국 의회 회의록, 유튜브 댓글·실시간 채팅, Polis, 웹 주소에서 바로 받습니다. 받은 자료는 작업 폴더에만 남습니다.",upload:"파일 올리기",bypath:"또는 파일 경로",load:"불러오기",
+rows:"행",col:"열",m_file:"파일",m_fetch:"직접 받기",src:"받을 곳",fetch:"받기",fstop:"멈추기",remember:"이 브라우저에 기억",
+fj_run:"받는 중",b_read:"파일 여는 중",b_up:"올리는 중",b_parse:"자료 읽는 중",busy_d:"큰 파일은 1분 넘게 걸릴 수 있습니다. 끝나면 ② 설정이 열립니다.",s2_wait:"① 자료를 읽는 중입니다. 끝나면 열립니다.",fj_done:"다 받았습니다",fj_error:"받지 못했습니다",fj_rows:"%n건",fetched:"받은 자료:",
+src_us:"미국 의회 회의록 (govinfo)",src_kn:"국회 회의록 — 국회도서관 데이터셋",src_oa:"국회 — 열린국회정보 Open API",src_po:"Polis 공개 토론",src_yc:"유튜브 댓글",src_yl:"유튜브 실시간 채팅",src_url:"주소(URL) — 파일·웹 페이지",
+d_us:"govinfo.gov에서 날짜별 회의록을 받아 발언 단위로 나눕니다. 발언자 이름·정당·주·상하원이 붙습니다. 인증키 없음, 퍼블릭 도메인. 한 번에 92일까지.",
+d_kn:"국회도서관 국가학술정보 클라우드 「입법정보」의 회의록 데이터셋(본회의·상임위원회·특별위원회·예결위·국정감사·국정조사·소위원회, 발언자 단위 XLSX)을 받아 여기 올립니다. 여러 파일을 한꺼번에 올릴 수 있고, 기간·위원회·회의 구분으로 거릅니다. 발언자 칸(「서영교 위원」「기획재정부제1차관 이형일」)은 이름·직함·구분(의원 / 국회 사무처 / 정부·기관·증인 등)으로 나눕니다 — ②의 「열 값으로 빼기」에서 side 열로 정부 답변 등을 뺄 수 있습니다. 발언자 칸이 숫자 ID인 옛 자료는 위원장 호명으로 이름을 추정합니다(확인 필요). 이 데이터셋은 국회도서관 Open API(학술정보 검색·분석용)로는 제공되지 않아 파일로 받습니다.",
+nanet_open:"국회도서관 회의록 데이터셋 목록 열기",nanet_hint:" — 데이터셋을 누르고 첨부 XLSX를 내려받으세요",uploading:"올리는 중",nanet_auto:"국회도서관 회의록 데이터셋이라 「직접 받기 → 국회도서관」 방식으로 자동 변환합니다(첫 시트의 회의록 목록 대신 회의마다의 발언을 읽습니다).",f_dfrom:"기간 시작 (비우면 전체)",f_dto:"기간 끝",f_com:"위원회 (쉼표로, 일부만 적어도 됨)",f_kind:"회의 구분 (예: 본회의, 상임위)",
+d_oa:"열린국회정보(open.assembly.go.kr) Open API. 인증키와 API 코드(「Open API 상세」 요청주소의 끝부분)를 넣으면 표를 받습니다. 회의록 API는 본문 대신 회의 목록과 파일 링크만 주는 경우가 있습니다.",
+d_po:"Polis 공개 자료(CC BY 4.0)에서 대화 하나를 받습니다. 의견마다 작성자의 의견 집단과 운영자 처리 결과가 붙습니다.",
+d_yc:"영상 주소를 한 줄에 하나씩 적습니다. 쉼표 뒤에 집단 이름을 붙일 수 있습니다(없으면 채널 이름). 본인 YouTube Data API 키가 필요합니다. 작성자 ID는 받자마자 해시합니다. 받은 댓글은 다시 배포하지 마세요.",
+d_yl:"지금 방송 중인 영상의 실시간 채팅을 받습니다. 「멈추기」를 누르거나, 방송이 끝나거나, 정한 시간이 지나면 끝납니다. 끝난 방송의 채팅은 공식 API로 받을 수 없습니다. 하루 API 할당량(10,000단위)에 주의하세요.",
+d_url:"주소를 한 줄에 하나씩 적습니다. CSV·TSV·XLSX·JSON 파일 주소면 그대로 받고, 웹 페이지면 문단 단위로 나눕니다. 남의 글은 분석용으로만 쓰세요.",
+f_start:"시작일",f_end:"종료일",f_file:"내려받은 XLSX (여러 개 가능)",f_key:"인증키 · API 키 (도구는 저장하지 않음)",f_code:"API 코드",f_params:"추가 조건 (예: DAE_NUM=22&COMM_NAME=법제사법위원회)",f_maxp:"최대 쪽 수",f_conv:"대화 이름",f_videos:"영상 주소 (한 줄에 하나, 「주소, 집단」 가능)",f_url:"방송 주소",f_maxm:"최대 수집 시간(분)",f_urls:"주소 (한 줄에 하나)",f_minc:"이보다 짧은 문단은 뺌",filled:"채워진 칸",avgc:"평균 글자",distinct:"서로 다른 값",
+s2:"열과 설정",f_text:"글이 든 열 *",f_group:"집단을 가르는 열 *",f_speaker:"작성자·발언자 열 (선택)",none:"(없음)",f_context:"대표 발언 옆에 붙일 열 (공개 발언일 때)",
+f_policy:"공개판(밖으로 공유하는 보고서)에 원문을 실을까",pol_private:"싣지 않음 — 원문·작성자 모두 내부 검토판에만 (기본)",pol_quotes:"원문만 실음 — 대표 발언은 싣고 작성자는 싣지 않음 (공개 토론·청원·공개 댓글 등. 약관·저작권·개인정보는 직접 확인)",pol_public:"실음 — 공인의 공개 발언: 대표 발언과 이름",pol_note:"분석하는 동안에는 어느 쪽이든 원문을 봅니다. ④ 판단 화면과 내부 검토판에 표본·대표 발언이 나오고, 묶음마다 「글 더 보기」로 맥락을 더 읽을 수 있습니다. 이 선택은 밖으로 내보낼 공개판에만 적용됩니다.",
+adv:"더 보기 — 세부 설정",f_title:"보고서 제목",f_subject:"무엇의 공론인가 (예: 미국 의회 2026년 3월)",f_pergroup:"집단마다 최대 건수 (0 = 전부)",f_minchars:"이보다 짧은 글은 뺌 (글자)",f_mingroup:"이보다 작은 집단은 「기타」로",f_embed:"임베딩에 쓸 앞부분 글자 수",f_sel:"묶음 고르기 (자료가 작으면 leaf)",f_mcs:"최소 묶음 크기",auto:"자동",
+f_drop:"열 값으로 빼기 (예: 운영자가 거른 글)",add:"더하기",save_setup:"설정 저장",warn_text:"글 열 「%c」의 평균 길이가 %n자로 너무 짧습니다. 발언·댓글 본문이 든 열이 맞는지 확인하세요(번호·이름 열을 고르면 숫자끼리 묶입니다).",warn_group:"집단 열 「%c」의 값이 %n가지입니다. 회의 번호처럼 값이 너무 많은 열이면 집단 비교가 의미 없고 보고서가 읽기 어려워집니다. 정당·위원회·채널·구분(side) 같은 열을 고르세요.",warn_same:"글 열과 집단 열이 같습니다.",big_warn:"묶을 글이 약 %n건입니다. 2만 건을 넘으면 이 PC에서 몇 시간이 걸리고 메모리가 많이 들어 중간에 멈출 수 있습니다. 「더 보기」의 「집단마다 최대 건수」를 2,000 안팎으로 두거나(무작위 표본), ①에서 기간·위원회로 줄이세요. 표본으로 돌려도 보고서에 그렇게 기록됩니다.",saved:"저장했습니다",groupvals:"집단 값과 건수:",
+s3:"차수",s3_d:"1차는 규칙 없이 전부 묶습니다. 판단과 규칙을 거쳐 2차, 3차 … 몇 번이든 돌립니다. 각 차수 보고서가 앞 차수 기록을 이어 갑니다.",
+run1:"1차 실행 — 규칙 없이",runN:"%n차 실행",rules_none:"규칙 없음 (none)",open_pub:"공개판 (공유용)",open_int:"내부 검토판 (원문 포함)",review_this:"이 차수 판단하기",
+r_topics:"주제",r_runs:"출발점 5가지",r_uncl:"안 묶임",r_ari:"판끼리 일치도 ARI",r_rules:"규칙",r_dropped:"집단별 탈락",r_ruled:"규칙으로 뺌",
+st_load:"자료 읽는 중",st_clean:"정리 규칙 적용 중",st_embed:"임베딩 계산 중",
+mdl_dl:"처음 한 번 문장 임베딩 모델을 내려받는 중입니다(허깅페이스):",mdl_cached:"이미 받아 둔 모델로 계산합니다:",mdl_lic:"라이선스",mdl_size:"용량 약",mdl_h:"임베딩 모델",mdl_have:"이 PC에 받아 둠",mdl_none:"아직 안 받음 — 첫 1차 실행 때 자동으로 받습니다",mdl_dir:"모델을 둘 폴더",mdl_dir_save:"이 폴더로",mdl_dir_def:"기본 위치로",mdl_dir_note:"위치를 바꿔도 이미 받은 모델은 옮겨지지 않습니다. 새 위치에서 다시 받거나, 먼저 「모델 지우기」로 지우세요. 용량이 큰 드라이브(D: 등)를 고르면 됩니다.",mdl_dl_now:"지금 받기",mdl_del:"모델 지우기",mdl_del_arm:"한 번 더 누르면 지웁니다",mdl_deleted:"지웠습니다. 다음 실행 때 다시 받습니다.",mdl_dling:"받는 중…",mdl_done:"받았습니다",mdl_langs:"%n개 언어",mdl_where:"저장 위치(다음부터는 다시 받지 않음):",st_cluster:"묶는 중 — 무작위 출발점 5가지",st_summarize:"주제 정리 중",st_write:"보고서 쓰는 중",st_done:"끝났습니다",st_error:"실패했습니다",
+job_note:"자료 크기에 따라 몇 분 걸립니다. 이 창을 닫아도 작업은 계속됩니다.",e_count:"%a / %n건",e_reused:"이미 계산해 둔 %n건은 다시 계산하지 않음",e_eta:"남은 시간 약 %m",e_eta0:"남은 시간 재는 중…",dur_hm:"%h시간 %m분",dur_m:"%m분",dur_s1:"1분 안",jstop:"멈추기",jstop2:"한 번 더 누르면 멈춤",jstopped:"멈췄습니다. 그때까지 계산한 임베딩은 저장해 두었으니, 다시 돌리면 이어서 계산합니다.",job_tip:"오래 걸리면: 멈춘 뒤 ②의 「집단마다 최대 건수」나 「임베딩에 쓸 앞부분 글자 수」를 줄여 다시 돌리세요. 계산해 둔 임베딩은 그대로 다시 씁니다(같은 글·같은 글자 수일 때).",
+s4:"판단",s4_d:"묶음마다 표본을 읽고, 공론이 아닌 묶음(의사진행·인사·광고 등)에 「빼기」를 표시하고 주제 이름을 적습니다. 채점자마다 따로 저장하면 일치도(κ)를 잽니다.",
+reviewer:"채점자 이름",others:"저장된 채점자 (누르면 불러옴)",save_rv:"내 판단 저장",apply_lb:"합의된 이름을 보고서에 넣기",exclude:"공론 아님 — 빼기",label_ph:"주제 이름",
+times:"%a / %b회 다시 나옴",more_tx:"글 더 보기 (이 묶음 %n건)",more_tx2:"더 보기 — %a / %n건 봄",reps:"대표 발언",samples:"무작위 표본",votes:"다른 채점자:",v_ex:"뺌",v_keep:"남김",
+agr:"채점자 %n명 · κ = %k · 일치율 %p% · 합의로 뺄 묶음 %e개",agr1:"채점자 1명 — 일치도(κ)는 2명 이상일 때 잽니다.",split:"엇갈림:",
+s5:"규칙",s6:"결과 보기",s6_d:"차수를 돌릴 때마다 보고서 두 개가 만들어집니다. 2차·3차는 필요할 때만 돌리면 되고, 언제 멈추든 마지막 차수의 보고서가 결과입니다. ④에서 「합의된 이름을 보고서에 넣기」를 누르면 그 차수 보고서에 주제 이름이 들어갑니다.",res_h:"%n차 결과",res_pub:"공개판 열기",res_pub_d:"밖으로 공유하는 보고서입니다. 집계와 지도, 그리고 ②에서 고른 원문 공개 방식만큼의 대표 발언이 실립니다.",res_int:"내부 검토판 열기",res_int_d:"원문과 작성자까지 모두 담긴 분석자용입니다. 밖으로 보내지 마세요.",res_files:"파일 위치: 작업 폴더의",res_prev:"앞 차수:",res_go:"결과 보기 ↓",res_lab:"결과 보기:",next_lab:"다음 단계:",s5_d:"합의된 「빼기」 묶음에서 그 묶음에만 자주 나오는 문구를 찾아 규칙 초안을 씁니다. 앞 차수 규칙은 이어받습니다. 읽고 고친 뒤 저장하면 다음 차수에 씁니다.",
+pp_major:"과반이 빼자고 한 묶음",pp_all:"전원 일치한 묶음만",draft:"규칙 초안 만들기",
+pat:"패턴 (정규식)",maxc:"이보다 짧은 글에만 (0 = 제한 없음)",cov:"뺄 묶음에서 / 나머지에서",src:"출처",inh:"앞 차수",new_:"새 후보",mine:"직접",add_pat:"패턴 더하기",del:"지우기",
+save_rules:"r%n.json으로 저장 → %n차에 쓰기",rules_saved:"저장했습니다. ③에서 %n차를 실행하거나, ⑥에서 지금까지의 결과를 보세요.",
+excl_by:"뺄 묶음:",kappa_na:"(1명)"
+},en:{
+title:"Who Was Heard Analysis",back:"← MCP setup",privacy:"This screen shows raw texts. It opens only on this computer and nothing leaves it. Take care when sharing your screen.",
+proj_h:"Project",new_ph:"New project name",new_btn:"Create",open_dir:"Open work folder",auto_proj:"No need to create a project first — adding data in step 1 creates one, named from the box above or from the file or source.",work_at:"Work folder:",none_proj:"— choose or create a project —",
+s1:"Add data",s1_d:"Upload a table of texts (CSV, TSV, XLSX) or type a file path — or choose Fetch directly to pull from parliamentary records, YouTube comments or live chat, Polis, or any URL. Data stays in the work folder.",upload:"Upload a file",bypath:"or a file path",load:"Load",
+rows:"rows",col:"Column",m_file:"File",m_fetch:"Fetch directly",src:"Source",fetch:"Fetch",fstop:"Stop",remember:"Remember in this browser",
+fj_run:"Fetching",b_read:"Opening file",b_up:"Uploading",b_parse:"Reading data",busy_d:"Large files can take over a minute. Step ② opens when it finishes.",s2_wait:"Step ① is still reading the data. This opens when it finishes.",fj_done:"Done",fj_error:"Failed",fj_rows:"%n rows",fetched:"Fetched:",
+src_us:"U.S. Congressional Record (govinfo)",src_kn:"Korean National Assembly — NANET datasets",src_oa:"Korean National Assembly — Open API",src_po:"Polis open data",src_yc:"YouTube comments",src_yl:"YouTube live chat",src_url:"URL — files or web pages",
+d_us:"Downloads the daily Record from govinfo.gov and splits it into speaker turns with name, party, state and chamber. No key, public domain. Up to 92 days at a time.",
+d_kn:"Download the minutes datasets (plenary, standing and special committees, budget, audits, inquiries, subcommittees — utterance-level XLSX) from the National Assembly Library's open data portal, then upload them here. Several files at once; filter by dates, committee and meeting type. The speaker field (e.g. \"서영교 위원\") is split into name, title and side (member / Assembly staff / government, witnesses etc.) — drop a side in step 2 if you want only members. Older files with numeric IDs get names inferred from the chair's call-outs (verify). These datasets are files only — the Library's Open API covers academic search, not minutes.",
+nanet_open:"Open the NANET minutes dataset list",nanet_hint:" — open a dataset and download its XLSX",uploading:"Uploading",nanet_auto:"This is a NANET minutes dataset, so it is converted automatically (reading each meeting\u2019s utterances instead of the list on the first sheet).",f_dfrom:"From (blank = all)",f_dto:"To",f_com:"Committee (comma-separated, partial OK)",f_kind:"Meeting type",
+d_oa:"The National Assembly's Open API (open.assembly.go.kr). Enter your key and the API code (the end of the request URL on its detail page). Some minutes APIs return only meeting lists and file links, not the text.",
+d_po:"Downloads one conversation from Polis open data (CC BY 4.0), with each author's opinion group and the moderation outcome.",
+d_yc:"One video URL per line; add \", group\" to set a group (default: channel name). Needs your own YouTube Data API key. Author IDs are hashed on arrival. Do not redistribute comments.",
+d_yl:"Collects live chat from a video that is live now. It ends when you press Stop, the stream ends, or the time limit passes. The official API cannot fetch chat from ended streams. Mind the daily quota (10,000 units).",
+d_url:"One URL per line. CSV, TSV, XLSX or JSON files are taken as tables; web pages are split into paragraphs. Use others' writing for analysis only.",
+f_start:"Start date",f_end:"End date",f_file:"Downloaded XLSX (one or more)",f_key:"API key (the tool never saves it)",f_code:"API code",f_params:"Extra filters (e.g. DAE_NUM=22)",f_maxp:"Max pages",f_conv:"Conversation",f_videos:"Video URLs (one per line, \"URL, group\" allowed)",f_url:"Live stream URL",f_maxm:"Max minutes",f_urls:"URLs (one per line)",f_minc:"Drop paragraphs shorter than",filled:"Filled",avgc:"Avg chars",distinct:"Distinct",
+s2:"Columns and settings",f_text:"Text column *",f_group:"Group column *",f_speaker:"Author / speaker column (optional)",none:"(none)",f_context:"Columns shown next to quotes (public statements)",
+f_policy:"Put texts in the public report (the one you share)?",pol_private:"No — texts and authors stay in the internal report (default)",pol_quotes:"Texts only — quotes in the public report, no authors (open deliberations, petitions, public comments; check terms, copyright and privacy yourself)",pol_public:"Yes — public officials' on-record statements: quotes and names",pol_note:"Either way you read the texts while analysing: step 4 and the internal report show samples and representative statements, and each cluster has Read more texts for context. This choice only affects the public report you share.",
+adv:"More — detailed settings",f_title:"Report title",f_subject:"Whose discourse? (e.g. U.S. Congress, March 2026)",f_pergroup:"Max texts per group (0 = all)",f_minchars:"Drop texts shorter than (chars)",f_mingroup:"Merge groups smaller than this into Other",f_embed:"Characters used for embedding",f_sel:"Cluster selection (leaf for small data)",f_mcs:"Minimum cluster size",auto:"auto",
+f_drop:"Drop by column value (e.g. moderator-rejected)",add:"Add",save_setup:"Save settings",warn_text:"The text column \u201c%c\u201d averages only %n characters. Make sure it holds the actual statements or comments (choosing an ID or name column makes the tool cluster numbers).",warn_group:"The group column \u201c%c\u201d has %n distinct values. With that many (e.g. meeting numbers) group comparisons mean little; pick party, committee, channel or side instead.",warn_same:"The text and group columns are the same.",big_warn:"About %n texts to cluster. Above 20,000 this can take hours on a laptop and run out of memory. Set \"Max texts per group\" (under More) to about 2,000 (a random sample), or narrow the data in step 1. The report records the sampling.",saved:"Saved",groupvals:"Group values and counts:",
+s3:"Rounds",s3_d:"Round 1 clusters everything with no rules. After review and rules, run round 2, 3 … as many as needed. Each report carries the chain of earlier rounds.",
+run1:"Run round 1 — no rules",runN:"Run round %n",rules_none:"no rules (none)",open_pub:"Public report (to share)",open_int:"Internal report (with texts)",review_this:"Review this round",
+r_topics:"Topics",r_runs:"5 random starts",r_uncl:"Unclustered",r_ari:"ARI between runs",r_rules:"Rules",r_dropped:"Dropped by group",r_ruled:"Removed by rules",
+st_load:"Reading the data",st_clean:"Applying cleaning rules",st_embed:"Computing embeddings",
+mdl_dl:"Downloading the sentence-embedding model once (Hugging Face):",mdl_cached:"Using the model already on this computer:",mdl_lic:"license",mdl_size:"about",mdl_h:"Embedding model",mdl_have:"on this computer",mdl_none:"not downloaded yet — it downloads on the first run",mdl_dir:"Folder for the model",mdl_dir_save:"Use this folder",mdl_dir_def:"Default location",mdl_dir_note:"Changing the folder does not move a model already downloaded. Download again in the new folder, or delete it first. Pick a drive with space (e.g. D:).",mdl_dl_now:"Download now",mdl_del:"Delete model",mdl_del_arm:"Click again to delete",mdl_deleted:"Deleted. It will download again on the next run.",mdl_dling:"Downloading…",mdl_done:"Downloaded",mdl_langs:"%n languages",mdl_where:"Stored in (not downloaded again):",st_cluster:"Clustering — 5 random starts",st_summarize:"Summarising topics",st_write:"Writing reports",st_done:"Done",st_error:"Failed",
+job_note:"This takes minutes depending on the data. The job keeps running if you close this window.",e_count:"%a / %n texts",e_reused:"%n already computed, reused",e_eta:"about %m left",e_eta0:"estimating time left…",dur_hm:"%h h %m min",dur_m:"%m min",dur_s1:"under a minute",jstop:"Stop",jstop2:"Click again to stop",jstopped:"Stopped. Embeddings computed so far were saved, so running again continues from there.",job_tip:"Taking long? Stop, then lower \u201cmax per group\u201d or \u201ccharacters used for embedding\u201d in step 2 and run again. Saved embeddings are reused (same text, same character count).",
+s4:"Review",s4_d:"Read the samples in each cluster, mark clusters that are not public discourse (procedure, greetings, ads…) as Exclude, and name the topics. Save one file per reviewer to measure agreement (κ).",
+reviewer:"Reviewer name",others:"Saved reviewers (click to load)",save_rv:"Save my review",apply_lb:"Put agreed names into the report",exclude:"Not discourse — exclude",label_ph:"Topic name",
+times:"reappears in %a / %b runs",more_tx:"Read more texts (%n in this cluster)",more_tx2:"More — %a of %n read",reps:"Representative statements",samples:"Random samples",votes:"Other reviewers:",v_ex:"exclude",v_keep:"keep",
+agr:"%n reviewers · κ = %k · agreement %p% · %e clusters to exclude by consensus",agr1:"One reviewer — κ needs two or more.",split:"Split:",
+s5:"Rules",s6:"Results",s6_d:"Every round writes two reports. Rounds 2 and 3 are optional: whenever you stop, the last round\u2019s reports are the result. Pressing \u201cPut agreed names into the report\u201d in step 4 adds topic names to that round\u2019s reports.",res_h:"Round %n results",res_pub:"Open the public report",res_pub_d:"The report you share: aggregates, the map, and representative statements as far as the text policy in step 2 allows.",res_int:"Open the internal report",res_int_d:"For the analyst, with all texts and authors. Do not send it out.",res_files:"Files: in the work folder,",res_prev:"Earlier rounds:",res_go:"See results ↓",res_lab:"Results:",next_lab:"Next:",s5_d:"From the agreed Exclude clusters, the tool finds phrases common there and rare elsewhere and writes a draft. Earlier rules are inherited. Read, edit and save it for the next round.",
+pp_major:"Clusters a majority excluded",pp_all:"Only unanimous",draft:"Make a rules draft",
+pat:"Pattern (regex)",maxc:"Only texts shorter than (0 = no limit)",cov:"In excluded / elsewhere",src:"Source",inh:"earlier",new_:"new",mine:"manual",add_pat:"Add a pattern",del:"Delete",
+save_rules:"Save as r%n.json → use in round %n",rules_saved:"Saved. Run round %n in step 3, or see the results so far in step 6.",
+excl_by:"Excluded:",kappa_na:"(one reviewer)"
+}};
+var lang,P=null,PID="",REV=null,SELR=0,DRAFT=null,JOB=null,DROP=[];
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+function detect(){var s=store("wwh-lang");if(s==="ko"||s==="en")return s;var tz="";try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||""}catch(e){}
+ if(/^Asia\/(Seoul|Pyongyang)$/.test(tz))return "ko";return (navigator.languages||[navigator.language||""]).some(function(x){return /^ko/i.test(x)})?"ko":"en"}
+function t(k,o){var s=(T[lang][k]||k);if(o)for(var x in o)s=s.split("%"+x).join(o[x]);return s}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function $(id){return document.getElementById(id)}
+function apply(l){lang=l;document.documentElement.lang=l;
+ document.querySelectorAll("[data-k]").forEach(function(e){e.textContent=t(e.dataset.k)});
+ document.querySelectorAll("[data-ph]").forEach(function(e){e.placeholder=t(e.dataset.ph)});
+ document.querySelectorAll(".lang button").forEach(function(b){b.classList.toggle("on",b.dataset.l===l)});
+ renderSrcSel();renderAll();renderModel()}
+document.querySelectorAll(".lang button").forEach(function(b){b.onclick=function(){store("wwh-lang",b.dataset.l);apply(b.dataset.l)}});
+function err(m){var e=$("err");e.hidden=!m;e.textContent=m||"";if(m)e.scrollIntoView({block:"nearest"})}
+function api(method,path,body,raw){var h={"X-WWH-Token":TOKEN};var opt={method:method,headers:h};
+ if(raw){opt.body=raw.data;h["X-Filename"]=encodeURIComponent(raw.name)}else if(body!==undefined){opt.body=JSON.stringify(body)}
+ return fetch("/api/"+path,opt).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||r.status);return j})})}
+function fileUrl(rel){return "/files/"+encodeURIComponent(PID)+"/"+rel.split("/").map(encodeURIComponent).join("/")+"?t="+TOKEN}
+
+// ── 프로젝트 ──
+function loadProjects(sel){return api("GET","projects").then(function(r){$("workRoot").textContent=r.root;
+ var s=$("projSel");s.innerHTML='<option value="">'+esc(t("none_proj"))+'</option>'+r.projects.map(function(p){return '<option value="'+esc(p.id)+'">'+esc(p.name)+(p.input?" · "+esc(p.input):"")+'</option>'}).join("");
+ var want=sel||store("wwh-proj")||"";if(want&&r.projects.some(function(p){return p.id===want})){s.value=want;return openProject(want)}})}
+function ensureProject(nm){if(PID)return Promise.resolve(PID);var n=$("newName").value.trim()||nm||"project";
+ return api("POST","projects",{name:n}).then(function(r){$("newName").value="";return loadProjects(r.id).then(function(){return r.id})})}
+function today(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+$("projSel").onchange=function(){openProject(this.value)};
+$("newBtn").onclick=function(){var n=$("newName").value.trim();if(!n){$("newName").focus();return}
+ api("POST","projects",{name:n}).then(function(r){$("newName").value="";loadProjects(r.id)}).catch(function(e){err(e.message)})};
+$("openDir").onclick=function(){api("POST","p/"+PID+"/open",{})};
+function openProject(id){PID=id;store("wwh-proj",id);REV=null;DRAFT=null;SELR=0;err("");
+ if(!id){P=null;renderAll();return}
+ return api("GET","p/"+id).then(function(r){P=r;DROP=(r.project.setup&&r.project.setup.drop)||[];var rs=r.project.rounds;SELR=rs.length?rs[rs.length-1].n:0;
+  fillSetup();renderAll();if(SELR)loadReview(SELR)}).catch(function(e){err(e.message)})}
+function refresh(){return api("GET","p/"+PID).then(function(r){P=r;renderAll()})}
+
+// ── 1 자료 ──
+var BUSY=null;
+function busy(stage,detail){if(!stage){if(BUSY)clearInterval(BUSY.iv);BUSY=null;$("fjBarW").classList.remove("ind");if(!FJOB)$("fjob").hidden=true;renderAll();return}
+ if(!BUSY){BUSY={t0:Date.now()};BUSY.iv=setInterval(function(){$("fjTime").textContent=Math.round((Date.now()-BUSY.t0)/1000)+"s"},1000)}
+ $("fjob").hidden=false;$("fjBarW").classList.add("ind");$("fstopBtn").hidden=true;$("fjStage").textContent=stage;$("fjCount").textContent="";$("fjDetail").textContent=detail||t("busy_d");$("fjTime").textContent=Math.round((Date.now()-BUSY.t0)/1000)+"s";renderAll()}
+function mb(n){return n>=1048576?(n/1048576).toFixed(1)+"MB":Math.max(1,Math.round(n/1024))+"KB"}
+$("file").onchange=function(){var f=this.files[0];if(!f)return;err("");ensureProject(f.name.replace(/\.[^.]+$/,"")).then(function(){$("fname").textContent=f.name+" …";$("colsBox").hidden=false;
+ busy(t("b_read"),f.name+" · "+mb(f.size));
+ f.arrayBuffer().then(function(buf){busy(t("b_up"),f.name+" · "+mb(f.size)+" — "+t("busy_d"));var pr=api("POST","p/"+PID+"/upload",null,{data:buf,name:f.name});
+  setTimeout(function(){if(BUSY)busy(t("b_parse"),f.name+" · "+mb(f.size)+" — "+t("busy_d"))},f.size>5e6?4000:800);return pr})
+ .then(function(r){busy(null);afterInput(r)}).catch(function(e){busy(null);err(e.message)})}).catch(function(e){busy(null);err(e.message)})};
+$("pathBtn").onclick=function(){var v=$("pathIn").value.trim();if(!v)return;err("");ensureProject(v.split(/[\\/]/).pop().replace(/\.[^.]+$/,"")).then(function(){
+ busy(t("b_parse"),v);api("POST","p/"+PID+"/path",{path:v}).then(function(r){busy(null);afterInput(r)}).catch(function(e){busy(null);err(e.message)})}).catch(function(e){err(e.message)})};
+function afterInput(r){P=r;if(r.job){FJOB=r.job;renderAll();$("fetchedNote").textContent=t("nanet_auto");$("fetchedNote").className="small ok";pollFetch();return}fillSetup(true);renderAll()}
+function renderCols(){var c=P&&P.project.columns,fz=P&&P.project.fetched;$("fetchedNote").textContent=fz?t("fetched")+" "+fz.source+" · "+(fz.rows==null?"":Number(fz.rows).toLocaleString()+" "+t("rows"))+(fz.note?" · "+fz.note:""):"";$("colsBox").hidden=!c;if(!c)return;
+ $("fname").textContent=(P.project.input||{}).filename||"";$("nrows").textContent=c.rows.toLocaleString()+" "+t("rows");
+ $("colsTbl").innerHTML="<tr><th>"+t("col")+'</th><th class="num">'+t("filled")+'</th><th class="num">'+t("avgc")+'</th><th class="num">'+t("distinct")+"</th></tr>"+
+  c.columns.map(function(k){return "<tr><td>"+esc(k)+'</td><td class="num">'+c.filled[k].toLocaleString()+'</td><td class="num">'+c.avg_chars[k]+'</td><td class="num">'+c.distinct[k].toLocaleString()+"</td></tr>"}).join("")}
+
+// ── 모델 ──
+var MDL=null;
+function fmtGB(b){return (b/1e9).toFixed(2)+" GB"}
+function loadModel(){return api("GET","model").then(function(m){MDL=m;renderModel()})}
+function renderModel(){if(!MDL)return;var m=MDL;$("mdlName").href=m.url;$("mdlName").querySelector("code").textContent=m.name;
+ $("mdlMeta").textContent="· "+t("mdl_size")+" "+m.size+" · "+t("mdl_lic")+" "+m.license;
+ $("mdlState").textContent=m.cached?"— "+t("mdl_have")+" ("+fmtGB(m.size_bytes)+")":"— "+t("mdl_none");$("mdlState").className="small "+(m.cached?"ok":"mut");
+ if(document.activeElement!==$("mdlDir"))$("mdlDir").value=m.dir;$("mdlDirDef").disabled=!m.custom;
+ $("mdlDl").hidden=m.cached;$("mdlDel").hidden=!m.cached}
+$("mdlDirBtn").onclick=function(){err("");api("POST","model/dir",{path:$("mdlDir").value}).then(function(m){MDL=m;renderModel();$("mdlMsg").textContent=t("saved");$("mdlMsg").className="small ok"}).catch(function(e){err(e.message)})};
+$("mdlDirDef").onclick=function(){err("");api("POST","model/dir",{path:""}).then(function(m){MDL=m;renderModel()}).catch(function(e){err(e.message)})};
+var delArm=null;$("mdlDel").onclick=function(){var b=$("mdlDel");if(!b.classList.contains("arm")){b.classList.add("arm");b.textContent=t("mdl_del_arm");delArm=setTimeout(function(){b.classList.remove("arm");b.textContent=t("mdl_del")},4000);return}
+ clearTimeout(delArm);b.classList.remove("arm");b.textContent=t("mdl_del");api("POST","model/delete",{}).then(function(m){MDL=m;renderModel();$("mdlMsg").textContent=t("mdl_deleted");$("mdlMsg").className="small ok"}).catch(function(e){err(e.message)})};
+$("mdlDl").onclick=function(){err("");$("mdlDl").disabled=true;$("mdlMsg").textContent=t("mdl_dling");$("mdlMsg").className="small";
+ api("POST","model/download",{}).then(function(j){var poll=function(){api("GET","jobs/"+j.id).then(function(s){if(s.state==="running"){$("mdlMsg").textContent=t("mdl_dling")+" "+s.elapsed+"s";setTimeout(poll,2000);return}
+  $("mdlDl").disabled=false;if(s.state==="error"){err(s.error);$("mdlMsg").textContent=""}else{$("mdlMsg").textContent=t("mdl_done");$("mdlMsg").className="small ok"}loadModel()})};poll()}).catch(function(e){$("mdlDl").disabled=false;err(e.message)})};
+
+// ── 1 직접 받기 ──
+var SRC=[["us-congress","src_us","d_us",[["start","date"],["end","date"]]],
+ ["korean-nanet","src_kn","d_kn",[["link","link"],["file","file"],["date_from","date",""],["date_to","date",""],["committee","text"],["kind","text"]]],
+ ["open-assembly","src_oa","d_oa",[["key","secret"],["code","text"],["params","text","wide"],["max_pages","number",50]]],
+ ["polis","src_po","d_po",[["conversation","text","","american-assembly.bowling-green"]]],
+ ["youtube-comments","src_yc","d_yc",[["key","secret"],["max_pages","number",50],["videos","area"]]],
+ ["youtube-live","src_yl","d_yl",[["key","secret"],["url","text"],["max_minutes","number",180]]],
+ ["url","src_url","d_url",[["urls","area"],["min_chars","number",5]]]];
+var FLAB={link:"f_link",date_from:"f_dfrom",date_to:"f_dto",committee:"f_com",kind:"f_kind",start:"f_start",end:"f_end",file:"f_file",key:"f_key",code:"f_code",params:"f_params",max_pages:"f_maxp",conversation:"f_conv",videos:"f_videos",url:"f_url",max_minutes:"f_maxm",urls:"f_urls",min_chars:"f_minc"};
+var FJOB=null,MODE="file";
+document.querySelectorAll(".seg .sg").forEach(function(b){b.onclick=function(){MODE=b.dataset.m;document.querySelectorAll(".seg .sg").forEach(function(x){x.classList.toggle("on",x===b)});$("mFile").hidden=MODE!=="file";$("mFetch").hidden=MODE!=="fetch"}});
+function srcDef(){var v=$("srcSel").value;return SRC.filter(function(x){return x[0]===v})[0]}
+function renderSrcSel(){var cur=$("srcSel").value||store("wwh-src")||"us-congress";$("srcSel").innerHTML=SRC.map(function(x){return '<option value="'+x[0]+'"'+(x[0]===cur?" selected":"")+'>'+esc(t(x[1]))+'</option>'}).join("");renderSrcForm()}
+function lastMonth(){var d=new Date();var a=new Date(d.getFullYear(),d.getMonth()-1,1),b=new Date(d.getFullYear(),d.getMonth(),0);var f=function(x){return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0")};return [f(a),f(b)]}
+function renderSrcForm(){var d=srcDef();store("wwh-src",d[0]);$("srcDesc").textContent=t(d[2]);var lm=lastMonth();
+ $("srcForm").innerHTML=d[3].map(function(f){var id="sf_"+f[0],lab='<span>'+esc(t(FLAB[f[0]]))+'</span>',ty=f[1],dv=f[3]!==undefined?f[3]:(f[2]!==undefined&&typeof f[2]==="number"?f[2]:"");
+  if(f[0]==="start")dv=lm[0];if(f[0]==="end")dv=lm[1];
+  if(ty==="link")return '<div class="field wide"><a href="https://losi-open.nanet.go.kr/user/dataset/datasetList.do?category_cd=2&category_name=%EC%9E%85%EB%B2%95%EC%A0%95%EB%B3%B4" target="_blank" rel="noopener">'+esc(t("nanet_open"))+' ↗</a><span class="small mut">'+esc(t("nanet_hint"))+'</span></div>';
+  var inp=ty==="area"?'<textarea id="'+id+'"></textarea>':ty==="file"?'<input type="file" multiple id="'+id+'" accept=".xlsx,.xlsm">':ty==="secret"?'<input type="password" autocomplete="off" id="'+id+'"><label class="small mut"><input type="checkbox" id="'+id+'_rem"> '+esc(t("remember"))+'</label>':'<input type="'+(ty==="number"?"number":ty==="date"?"date":"text")+'" id="'+id+'" value="'+esc(dv)+'">';
+  return '<div class="field'+(ty==="area"||f[2]==="wide"?" wide":"")+'">'+lab+inp+'</div>'}).join("");
+ var k=$("sf_key");if(k){var saved=store("wwh-key-"+(d[0].indexOf("youtube")===0?"youtube":d[0]));if(saved){k.value=saved;$("sf_key_rem").checked=true}}}
+$("srcSel").onchange=renderSrcForm;
+$("fetchBtn").onclick=function(){err("");var d=srcDef(),p={},fileIn=null;
+ d[3].forEach(function(f){var el=$("sf_"+f[0]);if(f[1]==="link")return;if(f[1]==="file"){fileIn=[].slice.call(el.files);return}p[f[0]]=el.value});
+ if(p.key!==undefined){var kk="wwh-key-"+(d[0].indexOf("youtube")===0?"youtube":d[0]);if($("sf_key_rem").checked)store(kk,p.key);else{try{localStorage.removeItem(kk)}catch(e){}}}
+ var go=function(){return api("POST","p/"+PID+"/fetch",{source:d[0],params:p}).then(function(j){FJOB=j;pollFetch()})};
+ var ens=function(){return ensureProject(t(d[1])+" "+today())};
+ var up=function(i){if(i>=fileIn.length)return go();$("fjob").hidden=false;$("fjStage").textContent=t("uploading")+" "+(i+1)+"/"+fileIn.length;
+  return fileIn[i].arrayBuffer().then(function(buf){return api("POST","p/"+PID+"/srcfile",null,{data:buf,name:fileIn[i].name})}).then(function(r){(p.files=p.files||[]).push(r.file);return up(i+1)})};
+ var pr=ens().then(function(){return fileIn&&fileIn.length?up(0):go()});
+ pr.catch(function(e){err(e.message)})};
+$("fstopBtn").onclick=function(){if(FJOB)api("POST","jobs/"+FJOB.id+"/stop",{})};
+function pollFetch(){if(!FJOB)return;api("GET","jobs/"+FJOB.id).then(function(j){FJOB=j;$("fjob").hidden=false;$("fjBarW").classList.toggle("ind",j.state==="running"&&j.pct==null);$("fstopBtn").hidden=j.state!=="running";$("fetchBtn").disabled=j.state==="running";
+ $("fjStage").textContent=t(j.state==="running"?"fj_run":j.state==="done"?"fj_done":"fj_error");$("fjCount").textContent=j.count?t("fj_rows",{n:Number(j.count).toLocaleString()}):"";
+ $("fjTime").textContent=j.elapsed+"s";$("fjDetail").textContent=j.detail||"";$("fjBar").style.width=(j.pct!=null?Math.max(5,j.pct):(j.state==="running"?35:100))+"%";
+ if(j.state==="running"){setTimeout(pollFetch,1200);return}
+ if(j.state==="error")err(j.error);FJOB=null;$("fetchBtn").disabled=false;refresh().then(function(){fillSetup(true);renderAll()})}).catch(function(){setTimeout(pollFetch,3000)})}
+
+// ── 2 설정 ──
+function opts(sel,list,val,blank){sel.innerHTML=(blank?'<option value="">'+esc(t("none"))+'</option>':"")+list.map(function(k){return '<option'+(k===val?" selected":"")+'>'+esc(k)+'</option>'}).join("")}
+function fillSetup(guess){var c=P&&P.project.columns;if(!c)return;var s=(P.project.setup&&P.project.setup.text)?P.project.setup:(P.project.suggest||{});var cols=c.columns;if(s.drop)DROP=s.drop.slice();
+ var byLen=cols.slice().sort(function(a,b){return c.avg_chars[b]-c.avg_chars[a]});
+ var grp=cols.filter(function(k){return c.values&&c.values[k]&&c.distinct[k]>1&&c.distinct[k]<=20});
+ opts($("fText"),cols,s.text||(guess||!s.text?byLen[0]:""));opts($("fGroup"),cols,s.group||grp[0]||cols[0]);opts($("fSpeaker"),cols,s.speaker||"",true);
+ $("fContext").innerHTML=cols.map(function(k){var on=(s.context||[]).indexOf(k)>=0;return '<label class="chip'+(on?" on":"")+'"><input type="checkbox" value="'+esc(k)+'"'+(on?" checked":"")+'> '+esc(k)+'</label>'}).join("");
+ $("fContext").querySelectorAll("input").forEach(function(i){i.onchange=function(){i.parentNode.classList.toggle("on",i.checked)}});
+ document.querySelector('input[name=pol][value="'+(s.text_policy||"private")+'"]').checked=true;
+ $("fTitle").value=s.title||"";$("fSubject").value=s.subject||"";$("fPer").value=s.per_group||0;$("fMin").value=(s.min_chars==null?5:s.min_chars);$("fMinG").value=s.min_group_size||0;
+ $("fEmb").value=s.embed_chars||"";$("fSel").value=s.selection||"eom";$("fMcs").value=s.min_cluster_size||"";
+ var vc=Object.keys(c.values||{});opts($("dCol"),vc,vc[0]);fillDropVals();renderGroupVals()}
+$("fGroup").onchange=renderGroupVals;
+function bigCheck(){var c=P&&P.project.columns,w=$("bigWarn");if(!c){w.hidden=true;return}var per=+$("fPer").value||0;
+ var g=(c.values||{})[$("fGroup").value],n=c.rows;if(per&&g)n=g.reduce(function(a,x){return a+Math.min(per,x[1])},0);else if(per)n=Math.min(n,per*Math.max(1,c.distinct[$("fGroup").value]||1));
+ w.hidden=n<=20000;if(!w.hidden)w.textContent=t("big_warn",{n:n.toLocaleString()})}
+$("fPer").oninput=bigCheck;
+function colCheck(){var c=P&&P.project.columns,w=$("colWarn");if(!c){w.hidden=true;return}var msgs=[],tx=$("fText").value,g=$("fGroup").value;
+ if(tx&&c.avg_chars[tx]<15)msgs.push(t("warn_text",{c:tx,n:c.avg_chars[tx]}));
+ if(g&&c.distinct[g]>30)msgs.push(t("warn_group",{c:g,n:c.distinct[g].toLocaleString()}));
+ if(tx&&g&&tx===g)msgs.push(t("warn_same"));
+ w.hidden=!msgs.length;w.textContent=msgs.join(" ")}
+$("fText").onchange=colCheck;
+function renderGroupVals(){bigCheck();colCheck();var c=P.project.columns,g=$("fGroup").value,v=(c.values||{})[g];
+ $("gvals").innerHTML=v?esc(t("groupvals"))+" "+v.slice(0,12).map(function(x){return esc(x[0]||"∅")+" <b>"+x[1].toLocaleString()+"</b>"}).join(" · "):""}
+$("dCol").onchange=fillDropVals;
+function fillDropVals(){var c=P.project.columns,v=((c.values||{})[$("dCol").value]||[]);$("dVal").innerHTML=v.map(function(x){return '<option value="'+esc(x[0])+'">'+esc(x[0]||"∅")+" ("+x[1]+")</option>"}).join("");renderDrop()}
+$("dAdd").onclick=function(){var k=$("dCol").value,v=$("dVal").value;if(!k)return;if(!DROP.some(function(d){return d[0]===k&&d[1]===v}))DROP.push([k,v]);renderDrop()};
+function renderDrop(){$("dList").innerHTML=DROP.map(function(d,i){return '<span class="chip">'+esc(d[0])+" = "+esc(d[1])+' <a href="#" data-i="'+i+'">✕</a></span>'}).join("");
+ $("dList").querySelectorAll("a").forEach(function(a){a.onclick=function(e){e.preventDefault();DROP.splice(+a.dataset.i,1);renderDrop()}})}
+$("saveSetup").onclick=function(){err("");var s={text:$("fText").value,group:$("fGroup").value,speaker:$("fSpeaker").value||null,
+ context:[].map.call($("fContext").querySelectorAll("input:checked"),function(i){return i.value}),
+ text_policy:document.querySelector("input[name=pol]:checked").value,title:$("fTitle").value,subject:$("fSubject").value,
+ per_group:+$("fPer").value||0,min_chars:($("fMin").value===""?5:+$("fMin").value),min_group_size:+$("fMinG").value||0,embed_chars:+$("fEmb").value||null,
+ selection:$("fSel").value,min_cluster_size:+$("fMcs").value||null,drop:DROP,
+ group_order:((P.project.columns.values||{})[$("fGroup").value]||[]).map(function(x){return x[0]})};
+ api("POST","p/"+PID+"/setup",s).then(function(r){P=r;$("setupMsg").textContent=t("saved");$("setupMsg").className="small ok";renderAll()}).catch(function(e){err(e.message)})};
+
+// ── 3 차수 ──
+function renderResults(){var rs=(P&&P.project.rounds)||[],b=$("resBox");if(!rs.length){b.innerHTML="";return}
+ var r=rs[rs.length-1],s=r.summary||{},nm=r.run.split("/").pop();
+ b.innerHTML='<div class="res"><h3>'+esc(t("res_h",{n:r.n}))+' <span class="mut small">'+esc((r.finished||"").replace("T"," "))+'</span></h3>'+
+ '<div class="kv"><span>'+t("r_topics")+' <b>'+s.topics+'</b></span><span>'+t("r_uncl")+' <b>'+(s.unclustered_range||[]).join("–")+'%</b></span><span>n <b>'+(s.n_sample==null?"–":Number(s.n_sample).toLocaleString())+'</b></span></div>'+
+ '<div class="resg"><div><a class="btn pri" href="'+fileUrl(r.run+"_public.html")+'" target="_blank" rel="noopener">'+t("res_pub")+'</a><p class="small mut">'+t("res_pub_d")+'</p></div>'+
+ '<div><a class="btn" href="'+fileUrl(r.run+"_INTERNAL_do-not-share.html")+'" target="_blank" rel="noopener">'+t("res_int")+'</a><p class="small mut">'+t("res_int_d")+'</p></div></div>'+
+ '<p class="small mut">'+t("res_files")+' <code>rounds/'+esc(nm)+'_public.html</code> · <code>'+esc(nm)+'_public.json</code> <button id="resDir">'+t("open_dir")+'</button></p>'+
+ (rs.length>1?'<p class="small">'+t("res_prev")+' '+rs.slice(0,-1).map(function(x){return '<a href="'+fileUrl(x.run+"_public.html")+'" target="_blank" rel="noopener">'+x.n+(lang==="ko"?"차":"")+'</a>'}).join(" · ")+'</p>':'')+'</div>';
+ $("resDir").onclick=function(){api("POST","p/"+PID+"/open",{})}}
+function renderRounds(){var rs=(P&&P.project.rounds)||[];
+ $("rounds").innerHTML=rs.slice().reverse().map(function(r){var s=r.summary||{};
+  var g=(s.groups||[]).map(function(x,i){return esc(x)+" "+s.dropped_pct[i]+"%"+(s.rule_dropped&&s.rule_dropped[i]?" ("+t("r_ruled")+" "+s.rule_dropped[i]+")":"")}).join(" · ");
+  return '<div class="rc'+(r.n===SELR?" sel":"")+'"><div class="row" style="justify-content:space-between"><h3>'+r.n+(lang==="ko"?"차":" · round")+'</h3><span class="mut small">'+esc(r.finished||"")+'</span></div>'+
+  '<div class="kv"><span>'+t("r_rules")+' <b>'+esc(r.preset)+'</b></span><span>'+t("r_topics")+' <b>'+s.topics+'</b> ('+t("r_runs")+" "+(s.topics_range||[]).join("–")+')</span><span>'+t("r_uncl")+' <b>'+(s.unclustered_range||[]).join("–")+'%</b></span><span>'+t("r_ari")+' <b>'+(s.ari==null?"–":s.ari)+'</b></span></div>'+
+  '<div class="small mut">'+t("r_dropped")+": "+g+'</div>'+
+  '<div class="row"><span class="small mut">'+t("res_lab")+'</span><a href="'+fileUrl(r.run+"_public.html")+'" target="_blank" rel="noopener"><button>'+t("open_pub")+'</button></a><a href="'+fileUrl(r.run+"_INTERNAL_do-not-share.html")+'" target="_blank" rel="noopener"><button>'+t("open_int")+'</button></a><span class="small mut" style="margin-left:12px">'+t("next_lab")+'</span><button data-r="'+r.n+'" class="rvgo">'+t("review_this")+'</button></div></div>'}).join("");
+ $("rounds").querySelectorAll(".rvgo").forEach(function(b){b.onclick=function(){SELR=+b.dataset.r;DRAFT=null;renderAll();loadReview(SELR);$("s4").scrollIntoView({behavior:"smooth"})}});
+ var n=rs.length+1,files=(P&&P.rules_files||[]).filter(function(f){return /^r\d+\.json$/.test(f)});
+ $("runRules").hidden=n===1;$("runRules").innerHTML='<option value="">'+esc(t("rules_none"))+'</option>'+files.map(function(f){return '<option'+(f==="r"+n+".json"?" selected":"")+'>'+esc(f)+'</option>'}).join("");
+ renderResults();$("goRes").hidden=!rs.length;$("runBtn").textContent=n===1?t("run1"):t("runN",{n:n});$("runBtn").disabled=!!JOB||!(P&&P.project.setup&&P.project.setup.text)}
+$("runBtn").onclick=function(){err("");var rules=$("runRules").hidden?"":$("runRules").value;
+ api("POST","p/"+PID+"/run",{rules:rules||null}).then(function(j){JOB=j;pollJob()}).catch(function(e){err(e.message)})};
+var STAGES=["load","clean","embed","cluster","summarize","write","done"];
+function fmtDur(s){s=Math.max(0,Math.round(s));var h=Math.floor(s/3600),m=Math.round((s%3600)/60);if(m===60){h++;m=0}return h?t("dur_hm",{h:h,m:m}):s<60?t("dur_s1"):t("dur_m",{m:m})}
+$("jobStop").onclick=function(){if(!JOB)return;var b=this;if(!b.dataset.arm){b.dataset.arm=1;b.textContent=t("jstop2");setTimeout(function(){delete b.dataset.arm;b.textContent=t("jstop")},4000);return}
+ delete b.dataset.arm;b.textContent=t("jstop");b.disabled=true;api("POST","jobs/"+JOB.id+"/stop",{})};
+function pollJob(){if(!JOB)return;api("GET","jobs/"+JOB.id).then(function(j){JOB=j;$("job").hidden=false;
+ $("jobStage").textContent=t("st_"+(j.state==="error"?"error":j.stage));$("jobTime").textContent=j.elapsed+"s";
+ var si=STAGES.indexOf(j.stage),frac=(j.stage==="embed"&&j.e_total)?j.e_done/j.e_total:0;
+ $("jobBar").style.width=Math.max(5,(si+frac)/STAGES.length*100)+"%";renderRounds();
+ var emb=j.stage==="embed"&&j.e_total&&j.state==="running";$("jobCount").textContent=emb?t("e_count",{a:Number(j.e_done).toLocaleString(),n:Number(j.e_total).toLocaleString()}):"";
+ $("jobEta").hidden=!emb;if(emb)$("jobEta").textContent=(j.e_reused?t("e_reused",{n:Number(j.e_reused).toLocaleString()})+" · ":"")+(j.e_eta!=null?t("e_eta",{m:fmtDur(j.e_eta)}):t("e_eta0"));
+ $("jobTip").hidden=!(emb&&j.e_eta>1200);$("jobStop").hidden=j.state!=="running";$("jobStop").disabled=!!j.stop;
+ var jm=$("jobModel");if(j.model&&j.state==="running"&&(j.stage==="embed"||j.stage==="cluster")){var m=j.model;jm.hidden=false;
+  jm.innerHTML=esc(t(m.cached?"mdl_cached":"mdl_dl"))+' <a href="'+esc(m.url)+'" target="_blank" rel="noopener"><code>'+esc(m.name)+'</code></a> · '+esc(t("mdl_size"))+" "+esc(m.size)+' · '+esc(t("mdl_lic"))+" "+esc(m.license)+" · "+esc(t("mdl_langs",{n:m.langs}))+"<br>"+esc(t("mdl_where"))+" <code>"+esc(m.cache_dir)+"</code>"}else{jm.hidden=true}
+ if(j.state==="running"){setTimeout(pollJob,1500);return}
+ if(j.state==="error"){err(j.error+"\n\n"+(j.log||""))}else if(j.state==="stopped"){err(t("jstopped"))}
+ var done=j.state==="done";JOB=null;refresh().then(function(){if(done){SELR=P.project.rounds.length;renderAll();loadReview(SELR)}});setTimeout(function(){$("job").hidden=true},done?3000:0)}).catch(function(){setTimeout(pollJob,3000)})}
+
+// ── 4 판단 ──
+function loadReview(n){return api("GET","p/"+PID+"/round/"+n+"/review").then(function(r){REV=r;var me=$("rvName").value.trim()||store("wwh-reviewer")||"";$("rvName").value=me;
+ if(me&&r.reviews[me.replace(/ /g,"_")])fillMine(r.reviews[me.replace(/ /g,"_")]);else{REV.mine={exclude:[],labels:{}}}renderAll()}).catch(function(e){err(e.message)})}
+function fillMine(rv){REV.mine={exclude:(rv.exclude||[]).slice(),labels:Object.assign({},rv.labels||{})}}
+function colorOf(i){return "var(--c"+(i%6+1)+")"}
+function renderReview(){if(!REV){$("clist").innerHTML="";return}
+ $("s4r").textContent="— "+REV.round+(lang==="ko"?"차":"");
+ var names=Object.keys(REV.reviews);
+ $("rvList").innerHTML=names.length?names.map(function(n){return '<button class="chip" data-n="'+esc(n)+'">'+esc(REV.reviews[n].reviewer||n)+'</button>'}).join(""):'<span class="mut small">–</span>';
+ $("rvList").querySelectorAll("button").forEach(function(b){b.onclick=function(){$("rvName").value=REV.reviews[b.dataset.n].reviewer;fillMine(REV.reviews[b.dataset.n]);renderReview()}});
+ var a=REV.agreement;
+ $("agr").innerHTML=!a?"":(a.reviewers.length<2?esc(t("agr1")):esc(t("agr",{n:a.reviewers.length,k:a.kappa==null?"–":a.kappa,p:a.percent_agreement,e:a.excluded.length}))+(a.split.length?' · <span class="bad">'+esc(t("split"))+" "+a.split.map(function(s){return "#"+s.id+" ("+s.exclude_votes+"/"+s.of+")"}).join(", ")+"</span>":""));
+ $("legend").innerHTML=REV.groups.map(function(g,i){return '<span><i style="background:'+colorOf(i)+'"></i>'+esc(g)+"</span>"}).join("");
+ var me=($("rvName").value||"").trim().replace(/ /g,"_");
+ $("clist").innerHTML=REV.clusters.map(function(c){var ex=REV.mine.exclude.indexOf(c.id)>=0,tot=c.comp.reduce(function(a,b){return a+b},0)||1;
+  var others=names.filter(function(n){return n!==me}).map(function(n){var r=REV.reviews[n];return esc(r.reviewer)+": "+((r.exclude||[]).indexOf(c.id)>=0?t("v_ex"):t("v_keep"))+(r.labels&&r.labels[c.id]?" «"+esc(r.labels[c.id])+"»":"")}).join(" · ");
+  var q=function(arr){return arr.map(function(x){return '<div class="q">'+esc(x.text)+(x.speaker?' <span class="sp">— '+esc(x.speaker)+"</span>":"")+"</div>"}).join("")};
+  return '<div class="cl'+(ex?" ex":"")+'" data-id="'+c.id+'"><div class="clh"><div style="display:grid;gap:4px;min-width:0"><div><span class="mut">#'+c.id+'</span> <span class="words">'+esc(c.words.join(" · "))+'</span></div>'+
+   '<div class="meta">n='+c.n.toLocaleString()+" · "+esc(t("times",{a:c.app,b:c.runs}))+'</div><div class="comp">'+c.comp.map(function(v,i){return '<i style="width:'+(v/tot*100)+'%;background:'+colorOf(i)+'" title="'+esc(REV.groups[i])+" "+v+'"></i>'}).join("")+'</div></div>'+
+   '<div style="display:grid;gap:6px;min-width:0"><label><input type="checkbox" class="exc"'+(ex?" checked":"")+'> '+esc(t("exclude"))+'</label><input class="lab" placeholder="'+esc(t("label_ph"))+'" value="'+esc(REV.mine.labels[c.id]||"")+'"></div></div>'+
+   (others?'<div class="votes">'+esc(t("votes"))+" "+others+"</div>":"")+
+   (c.reps.length?"<details open><summary>"+esc(t("reps"))+"</summary>"+q(c.reps.slice(0,2))+"</details>":"")+
+   "<details"+(c.reps.length?"":" open")+"><summary>"+esc(t("samples"))+" ("+c.samples.length+")</summary>"+q(c.samples)+"</details>"+
+   (c.total_texts?'<div class="more" data-off="0"><div class="moretx"></div><button class="moreb">'+esc(t("more_tx",{n:c.total_texts.toLocaleString()}))+'</button></div>':"")+"</div>"}).join("");
+ $("clist").querySelectorAll(".cl").forEach(function(el){var id=+el.dataset.id;
+  el.querySelector(".exc").onchange=function(){var i=REV.mine.exclude.indexOf(id);if(this.checked&&i<0)REV.mine.exclude.push(id);if(!this.checked&&i>=0)REV.mine.exclude.splice(i,1);el.classList.toggle("ex",this.checked)};
+  el.querySelector(".lab").oninput=function(){REV.mine.labels[id]=this.value};
+  var mb=el.querySelector(".moreb");if(mb)mb.onclick=function(){var box=el.querySelector(".more"),off=+box.dataset.off;
+   api("GET","p/"+PID+"/round/"+REV.round+"/cluster/"+id+"?offset="+off).then(function(r){
+    box.querySelector(".moretx").insertAdjacentHTML("beforeend",r.texts.map(function(x){return '<div class="q">'+esc(x)+"</div>"}).join(""));
+    box.dataset.off=off+r.texts.length;if(off+r.texts.length>=r.total){mb.hidden=true}else{mb.textContent=t("more_tx2",{a:(off+r.texts.length).toLocaleString(),n:r.total.toLocaleString()})}}).catch(function(e){err(e.message)})}})}
+$("saveRv").onclick=function(){var n=$("rvName").value.trim();if(!n){$("rvName").focus();return}store("wwh-reviewer",n);err("");
+ api("POST","p/"+PID+"/round/"+REV.round+"/review",{reviewer:n,exclude:REV.mine.exclude,labels:REV.mine.labels}).then(function(r){var mine=REV.mine;REV=r;REV.mine=mine;
+ $("rvMsg").textContent=t("saved");$("rvMsg").className="small ok";refresh()}).catch(function(e){err(e.message)})};
+$("applyLb").onclick=function(){err("");api("POST","p/"+PID+"/round/"+REV.round+"/labels",{}).then(function(){$("rvMsg").textContent=t("saved");$("rvMsg").className="small ok"}).catch(function(e){err(e.message)})};
+
+// ── 5 규칙 ──
+$("draftBtn").onclick=function(){err("");api("POST","p/"+PID+"/round/"+REV.round+"/draft",{policy:document.querySelector("input[name=pp]:checked").value}).then(function(d){
+ var cands={};(d.rules._derived_from.candidates||[]).forEach(function(c){cands[c.pattern]=c});var nInh=d.rules.exclude_patterns.length-(d.rules._derived_from.candidates||[]).length;
+ DRAFT={from:d.file,round:REV.round+1,agreement:d.agreement,excluded:d.rules._derived_from.excluded_clusters,
+  pats:d.rules.exclude_patterns.map(function(p,i){var c=cands[p.pattern];return {pattern:p.pattern,max_chars:p.max_chars||0,src:i<nInh?"inh":"new_",cov:c?[c.cover_excluded,c.cover_other]:null,phrase:c&&c.phrase}})};
+ renderDraft()}).catch(function(e){err(e.message)})};
+$("addPat").onclick=function(){DRAFT.pats.push({pattern:"",max_chars:0,src:"mine"});renderDraft();var ins=$("patTbl").querySelectorAll("input.p");ins[ins.length-1].focus()};
+function pct(x){return (x*100).toFixed(x<0.1?1:0)+"%"}
+function renderDraft(){var on=!!DRAFT;$("addPat").hidden=!on;$("saveRulesRow").hidden=!on;if(!on){$("patTbl").innerHTML="";$("draftInfo").innerHTML="";return}
+ var a=DRAFT.agreement;$("draftInfo").innerHTML=esc(a.reviewers.length<2?t("agr1"):t("agr",{n:a.reviewers.length,k:a.kappa==null?"–":a.kappa,p:a.percent_agreement,e:a.excluded.length}))+"<br>"+esc(t("excl_by"))+" "+DRAFT.excluded.map(function(e){return "#"+e.id+" "+esc(e.words.slice(0,3).join("·"))+" ("+e.n+")"}).join(", ");
+ $("patTbl").innerHTML="<tr><th>"+t("pat")+"</th><th>"+t("maxc")+'</th><th class="num">'+t("cov")+"</th><th>"+t("src")+"</th><th></th></tr>"+DRAFT.pats.map(function(p,i){
+  return '<tr data-i="'+i+'"><td><input class="p mono" value="'+esc(p.pattern)+'"></td><td><input class="m" type="number" min="0" value="'+(p.max_chars||0)+'"></td><td class="num mono">'+(p.cov?pct(p.cov[0])+" / "+pct(p.cov[1]):"")+'</td><td class="tag">'+esc(t(p.src))+'</td><td><button class="danger del">'+esc(t("del"))+"</button></td></tr>"}).join("");
+ $("patTbl").querySelectorAll("tr[data-i]").forEach(function(tr){var p=DRAFT.pats[+tr.dataset.i];
+  tr.querySelector(".p").oninput=function(){p.pattern=this.value};tr.querySelector(".m").oninput=function(){p.max_chars=+this.value||0};
+  tr.querySelector(".del").onclick=function(){DRAFT.pats.splice(+tr.dataset.i,1);renderDraft()}});
+ $("saveRules").textContent=t("save_rules",{n:DRAFT.round})}
+$("saveRules").onclick=function(){err("");var orig={};(DRAFT.pats||[]).forEach(function(p){if(p.src==="mine")orig.added=(orig.added||0)+1});
+ api("POST","p/"+PID+"/rules/r"+DRAFT.round+".json",{_from:DRAFT.from,exclude_patterns:DRAFT.pats.filter(function(p){return p.pattern.trim()}),
+  human_edits:{kept:DRAFT.pats.filter(function(p){return p.src!=="mine"}).map(function(p){return p.pattern}),added:DRAFT.pats.filter(function(p){return p.src==="mine"}).map(function(p){return p.pattern})}})
+ .then(function(){$("rulesMsg").textContent=t("rules_saved",{n:DRAFT.round});$("rulesMsg").className="small ok";refresh()}).catch(function(e){err(e.message)})};
+
+// ── 전체 그리기 ──
+function renderAll(){var has=!!P,inp=has&&!!P.project.columns,set=inp&&P.project.setup&&P.project.setup.text,rs=has?P.project.rounds:[];
+ $("openDir").hidden=!has;["s1","s2","s3","s4","s5","s6"].forEach(function(id,i){$(id).classList.toggle("off",[false,!inp,!set,!rs.length,!(REV&&Object.keys(REV.reviews).length),!rs.length][i])});
+ if(has){renderCols()}renderRounds();renderReview();renderDraft();
+ $("file").disabled=$("pathBtn").disabled=$("fetchBtn").disabled=rs.length>0||!!FJOB||!!BUSY;$("saveSetup").disabled=!inp||rs.length>0;$("s2wait").hidden=!(BUSY||FJOB);$("draftBtn").disabled=!(REV&&Object.keys(REV.reviews).length);$("applyLb").disabled=!(REV&&Object.keys(REV.reviews).length);$("saveRv").disabled=!REV}
+lang=detect();apply(lang);loadProjects();loadModel().then(function(){if(MDL&&!MDL.cached)$("mdlBox").open=true});
+api("GET","job").then(function(r){if(r.job){if(r.job.kind==="fetch"){FJOB=r.job;pollFetch()}else{JOB=r.job;pollJob()}}});
+</script><button class="totop" id="totop" aria-label="맨 위로 · Back to top" title="맨 위로 · Back to top">↑</button>
+<script>(function(){var b=document.getElementById('totop');addEventListener('scroll',function(){b.classList.toggle('on',scrollY>600)},{passive:true});
+b.onclick=function(){scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}})();</script>
+</body></html>

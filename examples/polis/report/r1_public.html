@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>공론 지도 · Map of the discourse</title>
+<style>
+:root{
+  color-scheme:light;
+  --page:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;
+  --grid:#e1e0d9;--axis:#c3c2b7;--ring:rgba(11,11,11,.10);
+  --s1:#86b6ef;--s2:#5598e7;--s3:#2a78d6;--s4:#1c5cab;--s5:#104281;
+  --c1:#2a78d6;--c2:#eb6834;--c3:#1baf7a;
+  --out:#c9c8c0;--hl:#2a78d6;--dim:#e3e2db;--bar:#2a78d6;--warn:#fab219;--crit:#d03b3b;--quote:#f0efec;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;
+  --grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);
+  --s1:#184f95;--s2:#2a78d6;--s3:#5598e7;--s4:#86b6ef;--s5:#b7d3f6;
+  --c1:#3987e5;--c2:#d95926;--c3:#199e70;
+  --out:#3e3e3b;--hl:#5598e7;--dim:#2c2c2a;--bar:#3987e5;--quote:#232322;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;
+  --grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);
+  --s1:#184f95;--s2:#2a78d6;--s3:#5598e7;--s4:#86b6ef;--s5:#b7d3f6;
+  --c1:#3987e5;--c2:#d95926;--c3:#199e70;
+  --out:#3e3e3b;--hl:#5598e7;--dim:#2c2c2a;--bar:#3987e5;--quote:#232322;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic",sans-serif;padding-inline:16px;padding-block:28px 64px}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+header{display:flex;flex-direction:column;gap:6px}
+.kicker{font-size:12px;letter-spacing:.08em;color:var(--muted)}
+h1{font-size:28px;line-height:1.25;margin:0;text-wrap:balance}
+h2{font-size:19px;margin:0;text-wrap:balance}
+h3{font-size:16px;margin:0;line-height:1.35;text-wrap:balance}
+.part{font-size:12px;letter-spacing:.08em;color:var(--muted);border-top:1px solid var(--axis);padding-top:14px;margin-top:12px}
+p{margin:0;max-width:68ch;color:var(--ink2)}
+.zero{border-left:3px solid var(--ink);padding:10px 14px;background:var(--surface);color:var(--ink);max-width:none}
+.internal{border:2px solid var(--crit);border-radius:10px;padding:10px 14px;background:var(--surface);color:var(--ink);font-weight:600}
+.card{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.topics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.topics{grid-template-columns:1fr}}
+.topic{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.thead{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.tnum{font-size:12.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.kw{font-size:12.5px;color:var(--ink2)}
+.stack{display:flex;gap:2px;height:10px;border-radius:4px;overflow:hidden;background:var(--grid)}
+.stack span{display:block;height:100%}
+.slegend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--ink2)}
+blockquote{margin:0;background:var(--quote);border-radius:8px;padding:10px 12px;font-size:13.5px;line-height:1.55;color:var(--ink)}
+blockquote .by{display:block;margin-top:6px;font-size:12px;color:var(--muted)}
+.who{font-size:12.5px;color:var(--ink2)}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.tile .l{font-size:12px;color:var(--muted)}
+.tile .v{font-size:24px;font-weight:650;line-height:1.2;overflow-wrap:anywhere}
+.tile .s{font-size:12.5px;color:var(--ink2)}
+@media (max-width:760px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ctrl{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ctrl .lab{font-size:12px;color:var(--muted);margin-right:4px}
+button,select{font:inherit;font-size:13px;color:var(--ink);background:transparent;border:1px solid var(--axis);border-radius:999px;padding:4px 11px;cursor:pointer}
+button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+[hidden]{display:none!important}
+select option{background:var(--surface);color:var(--ink)}
+.gpanel{border:1px solid var(--axis);border-radius:12px;padding:10px;display:grid;gap:8px;background:var(--surface)}
+.gpanel input{font:inherit;font-size:13px;color:var(--ink);background:var(--page);border:1px solid var(--axis);border-radius:8px;padding:5px 10px;min-width:0;max-width:320px}
+.glist{display:flex;flex-wrap:wrap;gap:6px;max-height:260px;overflow-y:auto}
+.glist button{border-radius:8px;text-align:left}
+.totop{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:42px;height:42px;padding:0;border-radius:50%;background:var(--surface);box-shadow:0 2px 10px rgba(0,0,0,.18);font-size:18px;line-height:1;z-index:5;display:none}
+.totop.on{display:block}
+.mapbox{position:relative;width:100%;aspect-ratio:16/10;max-width:100%}
+canvas{width:100%;height:100%;display:block}
+.tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--ring);box-shadow:0 4px 14px rgba(0,0,0,.12);border-radius:8px;padding:8px 10px;font-size:12.5px;line-height:1.45;max-width:260px;display:none;z-index:2}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--ink2);align-items:center}
+.sw{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.dash{display:inline-block;width:22px;border-top:2px dashed var(--ink2);margin-right:5px;vertical-align:3px}
+.solid{display:inline-block;width:22px;border-top:2px solid var(--ink2);margin-right:5px;vertical-align:3px}
+.note{font-size:12.5px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.bars{display:flex;flex-direction:column;gap:7px;min-width:0}
+.brow{display:grid;grid-template-columns:130px 1fr 52px;gap:8px;align-items:center;font-size:13px}
+.brow .n{color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .t{height:12px;background:var(--grid);border-radius:0 4px 4px 0;position:relative}
+.brow .f{position:absolute;inset:0 auto 0 0;background:var(--bar);border-radius:0 4px 4px 0}
+.brow .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 8px;border-bottom:1px solid var(--grid);text-align:right;white-space:nowrap;vertical-align:top}
+th{color:var(--muted);font-weight:500;font-size:12px}
+th:first-child,td:first-child{text-align:left}
+td.w{white-space:normal;text-align:left;min-width:180px}
+.pill{display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:999px;border:1px solid var(--axis);color:var(--ink2);white-space:nowrap}
+.pill.u{border-color:var(--warn)}
+details{font-size:13px}
+details summary{cursor:pointer;color:var(--ink2)}
+.samp{margin:6px 0 0;padding-left:18px;color:var(--ink2);font-size:12.5px}
+.rec{display:grid;grid-template-columns:170px 1fr;gap:6px 14px;font-size:13px}
+.rec dt{color:var(--muted)}.rec dd{margin:0;overflow-wrap:anywhere}
+@media (max-width:560px){.rec{grid-template-columns:1fr}.brow{grid-template-columns:90px 1fr 48px}}
+footer{font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="kicker" id="kicker"></span>
+  <h1 id="title"></h1>
+  <p id="sub"></p>
+</header>
+<div id="banner"></div>
+
+<!-- ── 1부 · 공론 ── -->
+<div class="part">1부 · 무엇이 논의됐나 · WHAT WAS DISCUSSED</div>
+<section class="card">
+  <h2>공론 지도 · Map of the discourse</h2>
+  <div class="ctrl" id="mode"><span class="lab">색</span></div>
+  <div class="gpanel" id="gpanel" hidden><input id="gfind" type="search" placeholder="집단 이름으로 찾기" aria-label="집단 이름으로 찾기"><div class="glist" id="glist"></div></div>
+  <div class="mapbox"><canvas id="cv" role="img" aria-label="공론 지도. 점 하나가 글 하나. 같은 내용은 아래 주제 목록에 있습니다."></canvas><div class="tip" id="tip"></div></div>
+  <div class="legend" id="legend"></div>
+  <p class="note">점 하나가 글(발언·댓글) 하나입니다. 가까울수록 내용이 비슷하다는 뜻뿐이고, <b>가로·세로축, 묶음 사이의 거리, 묶음의 크기·모양에는 의미가 없습니다.</b></p>
+</section>
+<section class="topics" id="topics"></section>
+<div id="more"></div>
+
+<!-- ── 2부 · 믿을 수 있나 ── -->
+<div class="part">2부 · 이 지도를 얼마나 믿을 수 있나 · HOW FAR TO TRUST THIS MAP</div>
+<p class="zero">이 보고서는 지도를 <b>얼마나 믿을 수 있는지</b>까지만 말합니다. 주제가 무엇을 뜻하는지, 무엇을 써도 되는지는 읽는 사람이 정합니다. 그 판단에 필요한 재료 — 흔들림, 빠진 목소리, 도구가 내린 선택 — 는 아래에 빠짐없이 둡니다.<br><span class="note">It tells you how far to trust this map — not what it means.</span></p>
+<section class="tiles" id="tiles"></section>
+
+<section class="card">
+  <h2>흔들림 · Stability</h2>
+  <p>기계가 묶기를 시작하는 무작위 출발점만 바꿔 같은 설정으로 여러 번 묶었습니다. 결과가 달라진 만큼, 한 번 돌린 지도의 경계는 그만큼만 믿어야 합니다.</p>
+  <div class="grid2"><div class="tbl"><table id="runs"></table></div><div class="bars" id="appbars"></div></div>
+</section>
+
+<section class="card">
+  <h2>누가 빠졌나 · Who dropped out</h2>
+  <p>정리 규칙과 묶기에서 집단마다 빠지는 몫이 다릅니다. 지도에 덜 보이는 집단은 덜 말한 게 아니라 <b>덜 담긴</b> 것일 수 있습니다.</p>
+  <div class="grid2"><div class="bars" id="dropbars"></div><div class="bars" id="outbars"></div></div>
+  <div class="tbl"><table id="droptab"></table></div>
+</section>
+
+<section class="card" id="rulesec">
+  <h2>차수와 규칙 — 결과를 보고 사람이 정한 것 · Rounds &amp; rules</h2>
+  <div id="rulebody"></div>
+</section>
+
+<section class="card" id="concsec">
+  <h2>소수가 판을 채우나 · Concentration</h2>
+  <p>작성자 ID가 있는 글만 셉니다. 빈칸은 따로 적었습니다.</p>
+  <div class="tbl"><table id="conc"></table></div>
+</section>
+
+<section class="card">
+  <h2>규모 · Scale</h2>
+  <p>지도는 집단마다 같은 수를 넘지 않게 뽑았습니다. 원래 비율로 되돌리면 주제의 크기가 이렇게 바뀝니다.</p>
+  <div class="ctrl" id="wmode"><span class="lab">기준</span></div>
+  <div class="bars" id="wbars"></div>
+</section>
+
+<section class="card">
+  <h2>이 결과를 만든 선택 · Choices</h2>
+  <dl class="rec" id="rec"></dl>
+</section>
+
+<footer id="foot"></footer>
+</div>
+
+<script id="D" type="application/json">{"title":"공론 지도 · Map of the discourse","subject":"Polis — 미국 켄터키주 볼링그린 주민 토론 (American Assembly, 2018) · Bowling Green, KY","text_policy":"private","groups":["Group A","Group B","no group"],"points":[[8.574,1.499,0,0],[14.02,5.814,0,19],[11.575,4.914,0,17],[10.875,3.816,0,3],[11.017,3.484,0,3],[11.379,1.745,0,-1],[14.837,4.809,0,1],[11.457,1.844,0,4],[14.897,4.146,0,1],[12.955,6.894,0,-1],[10.678,2.94,0,3],[10.804,1.893,0,4],[13.51,7.293,0,-1],[11.075,1.624,0,4],[14.084,3.442,0,-1],[11.652,5.606,0,-1],[13.452,4.481,0,12],[13.484,4.919,0,12],[13.972,2.425,0,6],[14.356,5.962,0,18],[12.106,6.739,0,15],[11.271,1.907,0,4],[12.221,6.968,0,15],[11.294,5.305,0,17],[11.851,3.113,0,7],[12.168,4.095,0,-1],[10.921,4.526,0,-1],[12.396,4.979,0,16],[12.455,5.01,0,16],[13.471,7.279,0,-1],[8.715,1.613,0,0],[11.025,3.798,0,3],[13.75,4.355,0,-1],[13.977,6.964,0,-1],[11.277,1.915,0,4],[11.138,1.784,0,4],[13.619,6.602,0,19],[11.041,3.526,0,3],[12.331,6.451,0,-1],[13.831,6.753,0,19],[14.32,4.654,0,1],[7.875,2.188,0,0],[13.662,4.191,0,-1],[12.509,1.209,0,2],[13.1,1.649,0,-1],[14.379,2.255,0,-1],[8.645,1.504,0,0],[8.525,1.55,0,0],[10.293,4.163,0,9],[8.687,1.549,0,0],[14.777,3.134,0,-1],[12.145,6.994,0,15],[14.464,2.406,0,-1],[12.789,1.378,0,2],[12.518,1.164,0,2],[11.788,5.409,0,-1],[11.322,4.163,0,-1],[11.251,4.592,0,-1],[13.483,2.145,0,6],[13.448,1.884,0,6],[13.974,6.384,0,-1],[13.501,1.939,0,6],[12.014,6.021,0,-1],[11.673,5.831,0,-1],[10.763,1.854,0,4],[11.045,6.544,0,14],[14.605,2.795,0,11],[14.471,2.265,0,11],[12.663,5.286,0,16],[13.464,7.261,0,-1],[10.613,6.144,0,14],[12.139,4.149,0,-1],[10.337,4.652,0,-1],[14.235,5.792,0,18],[11.953,6.716,0,-1],[13.63,4.795,0,12],[11.444,1.53,0,4],[11.637,1.359,0,-1],[13.498,4.935,0,12],[13.364,2.081,0,6],[7.847,2.205,0,0],[11.434,0.954,0,5],[13.306,7.161,0,-1],[13.276,4.836,0,12],[13.228,5.819,0,-1],[12.175,2.637,0,7],[13.326,4.806,0,12],[12.924,4.714,0,-1],[11.828,5.643,0,-1],[11.352,5.978,0,-1],[14.747,4.829,0,1],[10.143,3.909,0,9],[13.025,4.771,0,-1],[13.312,4.688,0,-1],[12.02,4.272,0,-1],[14.778,3.563,0,-1],[10.129,3.96,0,9],[13.405,6.288,0,-1],[10.694,3.045,0,3],[13.699,3.7,0,-1],[14.102,4.14,0,-1],[13.501,4.133,0,12],[12.191,2.779,0,7],[13.637,5.011,0,12],[13.42,4.751,0,12],[13.457,2.296,0,6],[14.943,4.266,0,1],[11.438,6.087,0,14],[11.636,4.158,0,-1],[12.109,4.041,0,-1],[11.461,1.082,0,5],[12.638,4.51,0,-1],[14.648,2.619,0,11],[10.988,1.685,0,4],[12.347,1.962,0,-1],[12.313,1.946,0,-1],[10.15,5.681,0,8],[12.22,6.956,0,15],[13.969,5.703,0,-1],[11.742,5.028,0,17],[10.517,4.893,0,8],[14.265,6.32,0,18],[13.475,4.676,0,12],[7.835,2.217,0,0],[12.042,2.282,0,7],[8.598,1.717,0,0],[11.838,0.698,0,-1],[13.213,2.018,0,6],[14.215,2.027,0,-1],[13.249,5.684,0,-1],[14.511,2.378,0,11],[13.465,3.964,0,-1],[11.494,0.988,0,5],[11.769,0.692,0,-1],[12.574,4.245,0,-1],[10.661,6.199,0,-1],[12.508,1.15,0,2],[13.28,1.938,0,6],[11.613,1.881,0,4],[11.299,1.516,0,4],[11.24,1.351,0,-1],[12.117,3.239,0,-1],[11.667,1.186,0,5],[11.084,6.293,0,14],[11.198,6.366,0,14],[11.44,3.276,0,-1],[13.553,6.687,0,-1],[14.401,2.473,0,11],[11.658,6.137,0,-1],[13.467,3.317,0,13],[11.016,6.67,0,14],[14.845,4.902,0,1],[14.807,4.879,0,1],[13.601,2.258,0,6],[13.721,3.258,0,-1],[14.16,4.201,0,1],[12.316,6.904,0,15],[12.287,6.926,0,15],[14.063,5.053,0,12],[13.886,5.001,0,12],[13.264,6.156,0,-1],[8.074,1.995,0,0],[12.954,6.512,0,-1],[11.402,1.79,0,-1],[13.534,4.955,0,12],[14.6,4.12,0,-1],[13.595,4.127,0,-1],[14.622,2.563,0,11],[13.981,6.616,0,-1],[14.021,2.606,0,-1],[13.982,2.942,0,-1],[12.428,4.772,0,16],[12.445,7.048,0,15],[12.514,5.092,0,16],[11.338,4.813,0,-1],[9.968,5.185,0,8],[13.134,1.996,0,6],[10.982,3.623,0,3],[14.302,6.08,0,18],[10.734,2.211,0,-1],[13.252,3.243,0,13],[13.435,6.009,0,-1],[13.65,7.059,0,19],[14.961,3.139,0,10],[10.082,3.96,0,9],[14.198,5.269,0,12],[12.012,4.176,0,-1],[14.209,5.118,0,-1],[11.287,0.94,0,5],[11.838,3.227,0,7],[14.849,4.911,0,1],[12.558,4.102,0,-1],[11.153,1.272,0,-1],[11.407,1.003,0,5],[11.485,0.868,0,5],[12.048,2.557,0,7],[13.824,6.79,0,19],[13.897,3.054,0,-1],[13.302,6.973,0,-1],[8.773,1.785,0,0],[14.597,4.755,0,-1],[11.716,4.636,0,-1],[12.069,4.592,0,16],[9.88,5.01,0,8],[13.126,2.638,0,-1],[11.464,0.815,0,5],[14.629,2.596,0,11],[10.959,3.456,0,3],[13.754,6.79,0,19],[12.747,1.37,0,2],[11.754,5.095,0,17],[13.915,5.379,0,-1],[14.291,2.081,0,-1],[11.463,5.084,0,17],[14.242,5.068,0,-1],[14.836,4.87,0,1],[14.169,4.976,0,-1],[12.035,4.678,0,-1],[11.228,6.709,0,14],[10.943,6.662,0,14],[11.08,6.816,0,14],[12.121,3.211,0,-1],[12.287,6.926,0,15],[13.623,5.225,0,12],[12.586,1.101,0,2],[14.868,2.554,0,-1],[14.9,2.626,0,-1],[15.218,3.113,0,10],[14.745,2.757,0,-1],[12.245,5.707,0,-1],[13.7,4.56,0,12],[14.263,1.989,0,-1],[12.453,3.902,0,-1],[12.217,1.532,0,2],[12.164,3.556,0,-1],[14.064,5.251,0,12],[12.352,4.466,0,-1],[12.757,3.578,0,-1],[11.795,3.723,0,-1],[14.436,2.316,0,11],[12.176,3.739,0,-1],[15.111,2.92,0,-1],[13.736,6.526,0,-1],[12.523,4.651,0,-1],[13.473,4.383,0,12],[14.621,3.284,0,-1],[11.224,5.521,0,-1],[11.162,5.46,0,-1],[14.49,4.384,0,-1],[13.164,5.937,0,-1],[12.267,6.99,0,15],[14.219,5.117,0,-1],[11.622,2.34,0,-1],[14.589,3.095,0,-1],[13.79,3.009,0,13],[13.679,2.457,0,6],[13.616,6.632,0,-1],[10.205,4.716,0,-1],[10.929,3.651,0,3],[14.163,6.816,0,-1],[13.816,6.186,0,19],[13.953,6.204,0,-1],[13.411,6.103,0,19],[14.268,4.328,0,-1],[13.809,6.401,0,-1],[13.704,6.59,0,19],[12.2,2.729,0,7],[13.439,5.544,0,-1],[9.814,5.14,0,8],[10.452,3.827,0,9],[10.407,5.097,0,8],[13.516,3.445,0,13],[11.928,5.11,0,-1],[10.572,5.99,0,-1],[7.839,2.219,0,0],[10.328,5.343,0,8],[11.471,4.017,0,-1],[10.113,3.903,0,9],[11.368,1.535,0,4],[13.53,4.863,0,12],[11.39,1.084,0,5],[11.27,4.592,0,-1],[15.16,3.21,0,10],[13.277,4.213,0,12],[10.643,3.073,0,3],[9.81,5.079,0,8],[12.877,4.062,0,-1],[15.177,3.033,0,10],[15.158,3.13,0,10],[7.838,2.211,0,0],[14.206,6.917,0,-1],[13.349,6.525,0,-1],[14.158,6.135,0,-1],[10.465,5.896,0,-1],[13.571,2.577,0,-1],[13.777,5.325,0,-1],[13.513,2.128,0,6],[13.407,3.078,0,13],[11.134,3.788,0,3],[12.88,4.175,0,-1],[13.477,4.024,0,-1],[12.659,1.53,0,2],[10.346,3.527,0,-1],[11.283,1.552,0,4],[11.069,1.711,0,4],[11.303,1.653,0,4],[11.21,1.704,0,4],[13.178,2.849,0,-1],[14.709,3.006,0,-1],[12.738,3.316,0,-1],[12.182,2.621,0,7],[12.075,3.51,0,7],[8.729,1.385,0,0],[12.39,1.354,0,-1],[10.765,4.916,0,8],[11.937,2.625,0,7],[12.526,2.401,0,-1],[12.678,2.329,0,-1],[15.018,3.357,0,10],[11.236,1.212,0,5],[10.541,5.082,0,8],[8.266,1.899,0,0],[12.809,3.669,0,-1],[10.786,1.836,0,4],[11.382,0.899,0,5],[11.887,1.014,0,5],[9.805,4.985,0,8],[7.889,2.172,0,0],[7.907,2.149,0,0],[8.576,1.639,0,0],[8.597,1.589,0,0],[8.621,1.486,0,0],[9.711,4.734,0,-1],[9.686,4.702,0,-1],[12.134,6.894,0,15],[9.796,5.136,0,8],[10.095,5.167,0,8],[9.826,5.47,0,8],[10.649,1.854,0,4],[10.806,1.923,0,4],[14.351,6.093,1,18],[14.036,6.317,1,-1],[14.098,6.532,1,-1],[9.801,5.359,1,8],[11.267,1.691,1,4],[13.154,3.619,1,13],[12.141,2.878,1,7],[14.424,6.176,1,18],[14.031,6.32,1,-1],[11.754,2.739,1,7],[10.847,1.897,1,4],[10.944,6.685,1,14],[11.101,6.675,1,14],[10.876,1.765,1,4],[11.084,6.813,1,14],[14.14,4.95,1,-1],[12.182,2.613,1,7],[10.784,4.111,1,9],[9.763,5.5,1,8],[10.968,6.737,1,14],[13.875,2.723,1,-1],[12.08,4.458,1,-1],[14.266,2.855,1,-1],[14.818,3.251,1,10],[14.463,2.379,1,-1],[13.712,5.307,1,-1],[8.514,1.553,1,0],[8.587,1.468,1,0],[8.539,1.466,1,0],[8.664,1.401,1,0],[13.6,2.318,1,6],[13.437,3.158,1,13],[12.688,1.313,1,2],[14.583,2.987,1,-1],[14.019,7.007,1,-1],[13.19,3.464,1,13],[10.971,3.706,1,3],[13.638,2.589,1,-1],[11.622,4.749,1,17],[13.037,3.537,1,13],[13.337,5.392,1,12],[13.36,6.692,1,-1],[12.266,7.046,1,15],[12.078,6.418,1,15],[10.772,5.373,1,-1],[10.571,4.283,1,9],[11.075,5.434,1,17],[11.924,3.492,1,7],[7.901,2.163,1,0],[12.433,5.078,1,16],[13.53,2.506,1,6],[10.649,3.026,1,3],[11.38,5.681,1,-1],[13.437,6.553,1,-1],[14.05,6.961,1,-1],[10.303,3.488,1,-1],[10.197,3.78,1,9],[10.336,3.576,1,-1],[10.643,3.868,1,-1],[14.499,3.004,1,-1],[12.861,6.909,1,15],[10.872,2.439,1,4],[11.085,6.813,1,14],[11.086,6.761,1,14],[11.235,5.241,1,17],[12.962,2.742,1,-1],[14.875,4.852,1,1],[12.343,4.87,1,16],[13.309,4.399,1,12],[10.788,4.451,1,-1],[14.841,4.893,1,1],[12.479,5.131,1,16],[11.611,5.708,1,14],[11.835,1.054,1,5],[13.76,5.454,1,-1],[13.838,3.541,1,-1],[15.137,3.055,1,10],[12.43,5.037,1,16],[12.701,7.16,1,15],[10.883,3.504,1,3],[10.646,6.195,1,-1],[14.177,4.2,1,-1],[11.315,4.31,1,-1],[13.401,3.11,1,13],[11.3,5.123,1,17],[13.868,5.737,1,-1],[13.308,4.236,1,-1],[10.436,4.227,1,9],[13.379,6.178,1,19],[11.472,4.818,1,17],[10.982,3.616,1,3],[12.508,7.083,1,15],[12.614,7.154,1,15],[12.466,7.109,1,15],[13.525,6.96,1,-1],[13.608,6.905,1,-1],[9.786,5.471,1,8],[9.832,5.378,1,8],[11.839,3.207,1,7],[14.117,5.905,1,-1],[10.581,2.796,1,3],[11.049,3.661,1,3],[14.266,6.056,1,18],[11.306,6.773,1,14],[12.461,2.935,1,7],[12.695,7.056,1,15],[9.979,5.27,1,8],[14.664,2.601,1,11],[12.596,1.194,1,2],[15.047,2.836,1,-1],[13.685,3.32,1,-1],[8.578,1.456,1,0],[11.787,0.695,1,-1],[9.348,1.511,1,2],[11.9,0.687,1,-1],[13.592,2.987,1,13],[10.859,2.139,1,4],[11.494,0.576,1,-1],[11.484,0.85,1,5],[13.992,3.885,1,-1],[14.834,3.506,1,-1],[12.955,6.917,1,-1],[13.21,4.16,1,-1],[11.792,0.726,1,-1],[12.672,1.268,1,2],[12.606,1.225,1,2],[10.51,5.225,1,-1],[10.868,6.186,1,14],[15.176,3.363,1,-1],[13.239,4.766,1,12],[12.247,4.528,1,-1],[10.732,2.09,1,4],[14.354,4.403,1,-1],[9.893,5.336,1,8],[13.612,3.692,1,-1],[14.275,6.16,1,18],[8.703,1.811,1,0],[13.502,5.853,1,-1],[13.862,6.142,1,19],[13.612,6.443,1,19],[14.771,2.77,1,10],[14.911,2.655,1,-1],[10.845,3.997,1,3],[13.319,5.226,1,12],[13.147,6.865,1,-1],[10.185,5.272,1,8],[8.55,1.884,1,0],[11.22,0.892,1,-1],[11.64,2.382,1,7],[11.633,2.401,1,7],[14.248,2.085,1,-1],[10.461,5.225,1,8],[11.031,3.817,1,3],[13.284,3.342,1,13],[10.672,5.366,1,8],[11.355,5.378,1,17],[15.238,3.354,1,-1],[12.683,3.132,1,-1],[12.941,5.143,1,-1],[14.791,3.408,1,10],[14.126,5.92,1,-1],[9.731,5.53,1,8],[15.16,3.417,1,-1],[10.666,5.029,1,8],[10.807,3.889,1,3],[14.301,6.383,1,18],[14.185,6.582,1,-1],[11.896,5.928,1,14],[9.852,5.53,1,8],[10.062,4.83,1,8],[15.304,3.42,1,10],[12.938,6.894,1,-1],[10.167,5.57,1,8],[15.113,3.056,1,10],[9.725,5.47,1,8],[12.852,3.184,1,-1],[10.867,2.335,1,4],[11.927,4.62,1,17],[10.377,4.227,1,9],[11.666,2.418,1,7],[12.192,2.724,1,7],[14.856,2.952,1,10],[10.615,2.943,1,3],[9.774,5.069,1,8],[13.564,7.162,1,19],[11.729,5.85,1,14],[12.577,1.261,1,2],[13.173,3.713,1,13],[13.402,3.837,1,12],[11.638,2.288,1,-1],[10.627,3.847,1,9],[10.276,4.076,1,9],[10.324,4.42,1,9],[10.269,4.095,1,9],[11.392,5.168,1,17],[10.423,4.233,1,9],[10.551,4.532,1,9],[13.68,6.465,1,-1],[12.246,2.702,1,7],[11.919,4.435,1,-1],[13.488,2.111,1,6],[12.283,2.654,2,7],[13.42,3.057,2,13],[11.872,4.662,2,-1],[13.34,7.339,2,-1],[10.334,3.171,2,3],[14.781,3.045,2,-1],[11.651,6.032,2,14],[8.419,1.474,2,0],[10.59,2.897,2,3],[10.814,3.317,2,3],[11.765,6.884,2,15],[12.496,5.065,2,16],[10.705,1.911,2,4],[15.201,3.035,2,-1],[12.633,3.501,2,-1],[11.046,4.157,2,8],[15.136,3.116,2,10],[14.285,6.261,2,-1],[11.595,6.371,2,14],[11.85,6.424,2,-1],[8.667,1.848,2,0],[11.26,0.894,2,5],[13.344,7.315,2,-1],[12.506,2.912,2,7],[11.892,5.078,2,-1],[14.704,2.785,2,-1],[14.543,2.549,2,-1],[12.161,2.615,2,7],[15.067,2.823,2,10],[11.126,4.274,2,-1],[11.332,3.541,2,3],[14.457,3.641,2,-1],[11.801,2.691,2,7],[12.453,5.141,2,16],[11.011,3.97,2,3],[14.754,2.634,2,11],[13.666,6.632,2,-1],[13.686,5.986,2,-1],[13.504,4.493,2,12],[14.408,6.03,2,18],[11.777,4.835,2,17],[14.786,3.655,2,-1],[12.474,5.174,2,16],[10.161,3.758,2,9],[10.832,2.831,2,3],[11.948,1.535,2,2],[14.454,6.182,2,18],[14.405,6.103,2,-1],[15.022,3.22,2,10],[14.573,2.397,2,11],[11.451,3.955,2,3],[13.582,6.482,2,19],[10.652,3.055,2,3],[14.802,3.352,2,-1],[7.838,2.215,2,0],[10.416,5.257,2,-1],[7.861,2.249,2,0],[14.597,2.651,2,-1],[12.915,4.172,2,-1],[14.631,2.384,2,11],[13.657,6.74,2,-1],[8.752,1.304,2,0],[9.955,4.931,2,8],[14.905,4.938,2,1],[13.391,3.089,2,13]],"clusters":[{"id":0,"n":33,"app":5,"words":["drug","marijuana","opioid","doctors"],"comp":[20,8,5],"cx":8.363,"cy":1.784,"hull":[[8.751999855041504,1.3040000200271606],[8.77299976348877,1.784999966621399],[8.666999816894531,1.8480000495910645],[7.8379998207092285,2.2109999656677246],[8.418999671936035,1.4739999771118164]],"speakers_n":17,"label":""},{"id":8,"n":32,"app":5,"words":["city","officials","vote","able"],"comp":[14,16,2],"cx":10.095,"cy":5.202,"hull":[[9.805000305175781,4.985000133514404],[10.062000274658203,4.829999923706055],[10.517000198364258,4.89300012588501],[10.541000366210938,5.081999778747559],[10.461000442504883,5.224999904632568],[10.149999618530273,5.681000232696533],[9.730999946594238,5.53000020980835],[9.725000381469727,5.46999979019165],[9.77400016784668,5.068999767303467]],"speakers_n":20,"label":""},{"id":3,"n":29,"app":5,"words":["county","internet","warren","fiber"],"comp":[11,10,8],"cx":10.876,"cy":3.445,"hull":[[10.845000267028809,3.996999979019165],[10.333999633789062,3.1710000038146973],[10.614999771118164,2.943000078201294],[10.831999778747559,2.8310000896453857],[11.331999778747559,3.5409998893737793],[11.01099967956543,3.9700000286102295]],"speakers_n":26,"label":""},{"id":4,"n":27,"app":5,"words":["school","schools","all","parents"],"comp":[19,7,1],"cx":11.06,"cy":1.832,"hull":[[11.456999778747559,1.843999981880188],[10.859000205993652,2.1389999389648438],[10.732000350952148,2.0899999141693115],[10.64900016784668,1.8539999723434448],[11.074999809265137,1.6239999532699585],[11.298999786376953,1.5160000324249268],[11.444000244140625,1.5299999713897705]],"speakers_n":18,"label":""},{"id":12,"n":26,"app":5,"words":["parking","sidewalks","green","garage"],"comp":[20,5,1],"cx":13.545,"cy":4.778,"hull":[[13.50100040435791,4.132999897003174],[14.062999725341797,5.052999973297119],[13.336999893188477,5.392000198364258],[13.23900032043457,4.765999794006348],[13.277000427246094,4.2129998207092285]],"speakers_n":17,"label":""},{"id":7,"n":25,"app":5,"words":["homeless","tiny","community","house"],"comp":[10,11,4],"cx":12.039,"cy":2.778,"hull":[[11.838000297546387,3.2269999980926514],[11.633000373840332,2.4010000228881836],[12.041999816894531,2.2820000648498535],[12.505999565124512,2.9119999408721924],[12.461000442504883,2.934999942779541]],"speakers_n":19,"label":""},{"id":14,"n":22,"app":5,"words":["animals","allowed","smoking","enforced"],"comp":[9,11,2],"cx":11.208,"cy":6.437,"hull":[[10.61299991607666,6.144000053405762],[11.651000022888184,6.0320000648498535],[11.595000267028809,6.370999813079834],[11.305999755859375,6.7729997634887695],[11.079999923706055,6.815999984741211],[10.968000411987305,6.736999988555908]],"speakers_n":13,"label":""},{"id":15,"n":19,"app":5,"words":["traffic","police","enforcement","bgpd"],"comp":[10,8,1],"cx":12.336,"cy":6.956,"hull":[[12.105999946594238,6.738999843597412],[12.861000061035156,6.908999919891357],[12.701000213623047,7.159999847412109],[12.61400032043457,7.1539998054504395],[12.465999603271484,7.109000205993652],[12.265999794006348,7.046000003814697],[12.145000457763672,6.99399995803833]],"speakers_n":13,"label":""},{"id":9,"n":18,"app":5,"words":["temp","wage","tax","paying"],"comp":[6,11,1],"cx":10.345,"cy":4.073,"hull":[[10.324000358581543,4.420000076293945],[10.081999778747559,3.9600000381469727],[10.16100025177002,3.757999897003174],[10.626999855041504,3.8469998836517334],[10.571000099182129,4.2829999923706055]],"speakers_n":12,"label":""},{"id":10,"n":16,"app":4,"words":["bowling","green","needs","warren"],"comp":[6,7,3],"cx":15.044,"cy":3.128,"hull":[[14.791000366210938,3.4079999923706055],[14.855999946594238,2.9519999027252197],[15.067000389099121,2.822999954223633],[15.177000045776367,3.0329999923706055],[15.218000411987305,3.11299991607666],[15.15999984741211,3.2100000381469727],[15.017999649047852,3.3570001125335693]],"speakers_n":14,"label":""},{"id":6,"n":15,"app":5,"words":["store","more","restaurants","food"],"comp":[12,3,0],"cx":13.484,"cy":2.167,"hull":[[13.529999732971191,2.50600004196167],[13.213000297546387,2.0179998874664307],[13.279999732971191,1.937999963760376],[13.447999954223633,1.8839999437332153],[13.50100040435791,1.9390000104904175],[13.678999900817871,2.4570000171661377]],"speakers_n":12,"label":""},{"id":2,"n":15,"app":5,"words":["campus","wku","wku's","students"],"comp":[8,6,1],"cx":12.331,"cy":1.316,"hull":[[12.586000442504883,1.1009999513626099],[12.746999740600586,1.3700000047683716],[12.659000396728516,1.5299999713897705],[11.947999954223633,1.534999966621399],[12.508000373840332,1.149999976158142]],"speakers_n":15,"label":""},{"id":5,"n":15,"app":5,"words":["education","courses","job","students"],"comp":[12,2,1],"cx":11.478,"cy":0.989,"hull":[[11.666999816894531,1.1859999895095825],[11.236000061035156,1.2120000123977661],[11.260000228881836,0.8939999938011169],[11.46399974822998,0.8149999976158142],[11.484000205993652,0.8500000238418579]],"speakers_n":10,"label":""},{"id":13,"n":15,"app":4,"words":["activities","more","young","enough"],"comp":[5,8,2],"cx":13.367,"cy":3.278,"hull":[[13.154000282287598,3.61899995803833],[13.036999702453613,3.5369999408721924],[13.251999855041504,3.243000030517578],[13.390999794006348,3.0889999866485596],[13.420000076293945,3.056999921798706],[13.592000007629395,2.986999988555908],[13.515999794006348,3.444999933242798]],"speakers_n":12,"label":""},{"id":19,"n":14,"app":1,"words":["traffic","roads","intersection","block"],"comp":[9,4,1],"cx":13.688,"cy":6.507,"hull":[[13.649999618530273,7.059000015258789],[13.378999710083008,6.177999973297119],[13.41100025177002,6.103000164031982],[13.862000465393066,6.142000198364258],[13.831000328063965,6.752999782562256],[13.824000358581543,6.789999961853027]],"speakers_n":10,"label":""},{"id":17,"n":14,"app":3,"words":["rent","rental","landlord","tenant"],"comp":[5,8,1],"cx":11.499,"cy":5.057,"hull":[[11.354999542236328,5.377999782562256],[11.234999656677246,5.241000175476074],[11.300000190734863,5.123000144958496],[11.472000122070312,4.817999839782715],[11.621999740600586,4.749000072479248],[11.777000427246094,4.835000038146973],[11.753999710083008,5.09499979019165]],"speakers_n":14,"label":""},{"id":1,"n":13,"app":5,"words":["transportation","nashville","system","public"],"comp":[10,2,1],"cx":14.759,"cy":4.704,"hull":[[14.319999694824219,4.6539998054504395],[14.942999839782715,4.265999794006348],[14.904999732971191,4.938000202178955],[14.848999977111816,4.910999774932861]],"speakers_n":11,"label":""},{"id":16,"n":13,"app":3,"words":["recycling","litter","trash","services"],"comp":[6,4,3],"cx":12.433,"cy":5.017,"hull":[[12.343000411987305,4.869999885559082],[12.428000450134277,4.771999835968018],[12.513999938964844,5.0920000076293945],[12.473999977111816,5.173999786376953],[12.45300006866455,5.140999794006348]],"speakers_n":12,"label":""},{"id":11,"n":12,"app":3,"words":["bowling","green","indoor","needs"],"comp":[8,1,3],"cx":14.579,"cy":2.502,"hull":[[14.401000022888184,2.4730000495910645],[14.435999870300293,2.315999984741211],[14.630999565124512,2.384000062942505],[14.753999710083008,2.634000062942505],[14.64799976348877,2.61899995803833]],"speakers_n":12,"label":""},{"id":18,"n":11,"app":5,"words":["lane","road","campbell","scottsville"],"comp":[4,5,2],"cx":14.331,"cy":6.112,"hull":[[14.300999641418457,6.382999897003174],[14.265000343322754,6.320000171661377],[14.265999794006348,6.056000232696533],[14.355999946594238,5.961999893188477],[14.407999992370605,6.03000020980835],[14.454000473022461,6.182000160217285]],"speakers_n":11,"label":""}],"unclustered_by_group":[40.0,31.8,33.8],"runs":[{"seed":42,"clusters":20,"unclustered_pct":36.6},{"seed":1,"clusters":20,"unclustered_pct":32.8},{"seed":7,"clusters":20,"unclustered_pct":35.0},{"seed":11,"clusters":20,"unclustered_pct":38.3},{"seed":23,"clusters":20,"unclustered_pct":36.1}],"ari":{"mean":0.571,"min":0.498,"max":0.628},"clean":{"Group A":{"total":460,"short":1,"dup":0,"excluded":119,"rule":0,"kept":340,"dropped_pct":26.1},"Group B":{"total":334,"short":0,"dup":0,"excluded":133,"rule":0,"kept":201,"dropped_pct":39.8},"no group":{"total":102,"short":0,"dup":0,"excluded":37,"rule":0,"kept":65,"dropped_pct":36.3}},"concentration":{"Group A":{"speakers":157,"texts":460,"blank":0,"top10_pct":42.4,"top1pct_pct":26.5,"top1pct_n":2,"gini":0.5451},"Group B":{"speakers":165,"texts":334,"blank":0,"top10_pct":24.9,"top1pct_pct":9.0,"top1pct_n":2,"gini":0.3845},"no group":{"speakers":81,"texts":102,"blank":0,"top10_pct":24.5,"top1pct_pct":3.9,"top1pct_n":1,"gini":0.1728}},"popw":[1.0,1.0,1.0],"n_sample":606,"per_group":0,"choices":[["자료 / data","Polis open data, american-assembly.bowling-green — The Computational Democracy Project, CC BY 4.0"],["원문 공개 / text policy","일반인 글 — 공개판에 문장·작성자를 싣지 않음"],["규칙 파일 / preset","none v1 · sha256 2d7e73394843 · 패턴 0개"],["정리 규칙 / cleaning","20자 미만 제외 · 앞 200자 같은 글 중복 제외 · moderation = rejected 제외"],["표본 / sample","집단마다 최대 0건 무작위 추출(출발점 번호 42) · 임베딩은 앞 400자"],["의견 추출 / extraction","쓰지 않음 (LLM 없음)"],["임베딩 / embedding","sentence-transformers/paraphrase-multilingual-mpnet-base-v2"],["배치 / layout","UMAP · 묶기는 5차원, 그림은 2차원 · 이웃 15 · cosine"],["묶기 / clustering","HDBSCAN(leaf) · 최소 묶음 10 · 묶음 수 상한 없음"],["흔들림 / stability","무작위 출발점 5가지(42·1·7·11·23) · 같은 묶음 = 겹침(Jaccard) 0.5 이상"],["대표 발언 / representatives","묶음 중심(임베딩)에 가장 가까운 3건"],["특징어 / keywords","c-TF-IDF · 조사 단순 제거 · 잠정"],["주제 이름 / labels","사람이 표본을 읽고 붙임 (붙이기 전엔 비어 있음)"],["도구 / tool","who-was-heard 0.1.0 · 2026-10-18"]],"rules":{"min_chars":20,"dedup_prefix":200,"exclude_speakers":0,"exclude_patterns":[],"exclude_values":{"moderation":["rejected"]},"keep_empty_group":false},"preset":{"name":"none","version":"1","_sha256":"2d7e73394843","exclude_patterns":[]},"history":[],"round":1,"mode":"public"}</script>
+<script>
+(function(){
+const R=JSON.parse(document.getElementById('D').textContent);
+const INTERNAL=R.mode==='internal', PUB=R.text_policy==='public';
+const G=R.groups, GS=G.map(g=>g.length>12?g.slice(0,11)+'…':g), NG=G.length;
+const NR=R.runs.length;
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmt=n=>Number(n).toLocaleString('ko-KR');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const unstable=c=>c.app<=Math.floor(NR*0.6);
+const lvl=c=>Math.max(1,Math.min(5,Math.ceil(c.app/NR*5)));
+const GC=k=>NG<=3?`var(--c${k+1})`:'var(--bar)';
+const tname=c=>c.label||(c.words.length?c.words.slice(0,3).join(' · '):`묶음 ${c.id}`);
+const totalClustered=R.clusters.reduce((s,c)=>s+c.n,0);
+
+document.getElementById('kicker').textContent=(INTERNAL?'WHO-WAS-HEARD · 내부 검토판 · INTERNAL — DO NOT SHARE':'WHO-WAS-HEARD · FAIR LISTENING · 공개판')+(PUB?' · 공인 발언(원문 공개)':' · 원문 비공개');
+document.getElementById('title').textContent=R.title;
+const C=R.clean, totAll=G.reduce((a,g)=>a+C[g].total,0), keepAll=G.reduce((a,g)=>a+C[g].kept,0);
+document.getElementById('sub').textContent=(R.subject?R.subject+' — ':'')+`글 ${fmt(totAll)}건에서 정리 후 ${fmt(keepAll)}건, 그중 ${fmt(R.n_sample)}건을 묶어 주제 ${R.clusters.length}개를 찾았습니다.`;
+if(INTERNAL)document.getElementById('banner').innerHTML='<div class="internal">⚠ 내부 검토판입니다. 표본 원문이 들어 있습니다. 밖으로 내보내지 마세요. 공개·공유에는 공개판(_public)을 쓰세요.<br><span class="note">Internal review copy with sample texts. Do not share; use the _public report.</span></div>';
+document.getElementById('foot').textContent=INTERNAL?'내부 검토판 · 표본 원문 포함 · 반출 금지':(PUB?'공개판 · 공인의 공개 발언이라 대표 발언과 발언자 이름을 실었습니다.':'공개판 · 입력 문장을 담지 않습니다. 표본 원문은 내부 검토판에만 있습니다.');
+
+// ── 1부: 주제 카드
+const stackHTML=c=>`<div class="stack" aria-hidden="true">${c.comp.map((v,k)=>v?`<span style="width:${v/c.n*100}%;background:${GC(k)}"></span>`:'').join('')}</div>`+
+  `<div class="slegend">${c.comp.map((v,k)=>v?`<span><i class="sw" style="background:${GC(k)}"></i>${esc(GS[k])} ${Math.round(v/c.n*100)}%</span>`:'').join('')}</div>`;
+const S=R.samples||{}, IR=R.ireps||{};
+function card(c){
+  const share=(c.n/totalClustered*100).toFixed(1);
+  const badge=`<span class="pill ${unstable(c)?'u':''}" title="같은 설정으로 ${NR}번 돌려 ${c.app}번 다시 나옴">${unstable(c)?'⚠ 흔들림':'자주 나옴'} ${c.app}/${NR}</span>`;
+  let h=`<article class="topic"><div class="thead"><h3>${esc(tname(c))}</h3><span class="tnum">${fmt(c.n)}건 · ${share}%</span></div>`;
+  h+=`<div class="kw">${c.label?'특징어(잠정): '+esc(c.words.join(', ')):'<span class="note">이름 붙이기 전 — 특징어(잠정)</span>'} ${badge}</div>`;
+  h+=stackHTML(c);
+  const reps=c.reps||(INTERNAL?IR[c.id]:null);
+  if(reps&&reps.length){h+=reps.slice(0,2).map(r=>`<blockquote>${esc(r.text.length>320?r.text.slice(0,318)+'…':r.text)}<span class="by">${esc(r.speaker||'')}${r.group?' · '+esc(r.group):''}${r.ctx?' · '+esc(r.ctx):''}</span></blockquote>`).join('');}
+  else if(!PUB)h+='<p class="note">원문 비공개 자료입니다. 대표 발언은 내부 검토판에서 확인합니다.</p>';
+  if(c.top_speakers&&c.top_speakers.length)h+=`<div class="who">주로 말한 사람: ${c.top_speakers.map(s=>esc(s.name)+` <span class="note">${s.n}</span>`).join(' · ')} <span class="note">· 발언자 ${c.speakers_n}명</span></div>`;
+  if(INTERNAL&&S[c.id]){const sm=S[c.id].filter(x=>x.text);const ts=S[c.id].find(x=>x.top_speakers);
+    h+=`<details><summary>표본 ${sm.length}건 (내부)</summary><ol class="samp">${sm.map(x=>`<li>${esc(x.text)}${x.speaker?` <span class="note">— ${esc(x.speaker)}</span>`:''}</li>`).join('')}</ol>${ts?`<div class="note">상위 작성자: ${ts.top_speakers.map(s=>esc(s.name)+' '+s.n).join(' · ')}</div>`:''}</details>`;}
+  return h+'</article>';
+}
+const sorted=[...R.clusters].sort((a,b)=>b.n-a.n);
+const TOP=12;
+document.getElementById('topics').innerHTML=sorted.slice(0,TOP).map(card).join('');
+if(sorted.length>TOP){const m=document.getElementById('more');const b=document.createElement('button');b.textContent=`나머지 주제 ${sorted.length-TOP}개 더 보기`;
+  b.onclick=()=>{document.getElementById('topics').insertAdjacentHTML('beforeend',sorted.slice(TOP).map(card).join(''));b.remove();};m.appendChild(b);}
+
+// ── 지도
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),tip=document.getElementById('tip');
+const P=R.points, CL={}; R.clusters.forEach(c=>CL[c.id]=c);
+const xs=P.map(p=>p[0]),ys=P.map(p=>p[1]);
+const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+let mode=NG<=3?'g':'t',W=0,H=0;const pad=18;
+const sx=x=>pad+(x-x0)/((x1-x0)||1)*(W-2*pad), sy=y=>H-pad-(y-y0)/((y1-y0)||1)*(H-2*pad);
+function draw(){
+  const r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+  W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.fillStyle=css('--surface');ctx.fillRect(0,0,W,H);
+  const rp=[1,2,3,4,5].map(k=>css('--s'+k)),out=css('--out'),hl=css('--hl'),dim=css('--dim'),gc=[1,2,3].map(k=>css('--c'+k));
+  const order=P.map((p,i)=>i);
+  if(/^\d+$/.test(mode)){const g=+mode;order.sort((a,b)=>(P[a][2]===g)-(P[b][2]===g));}
+  else order.sort((a,b)=>(P[a][3]>=0)-(P[b][3]>=0));
+  for(const i of order){const p=P[i];let col,rad=2.2;
+    if(p[3]<0&&mode!=='g'&&!/^\d+$/.test(mode)){col=out;rad=1.6;}
+    else if(mode==='s')col=rp[lvl(CL[p[3]])-1];
+    else if(mode==='t')col=hl;
+    else if(mode==='g'){col=p[3]<0?out:gc[p[2]];if(p[3]<0)rad=1.6;}
+    else col=p[2]===+mode?hl:dim;
+    ctx.fillStyle=col;ctx.beginPath();ctx.arc(sx(p[0]),sy(p[1]),rad,0,7);ctx.fill();}
+  ctx.lineWidth=1.3;ctx.strokeStyle=css('--ink2');
+  R.clusters.forEach(c=>{if(!c.hull||c.hull.length<3)return;ctx.setLineDash(unstable(c)?[5,4]:[]);ctx.beginPath();
+    c.hull.forEach((q,j)=>{const X=sx(q[0]),Y=sy(q[1]);j?ctx.lineTo(X,Y):ctx.moveTo(X,Y)});ctx.closePath();ctx.stroke();});
+  ctx.setLineDash([]);ctx.font='600 12px system-ui,sans-serif';ctx.textAlign='center';
+  sorted.slice(0,10).forEach(c=>{let t=tname(c);if(t.length>22)t=t.slice(0,21)+'…';
+    const X=sx(c.cx),Y=sy(c.cy);ctx.lineWidth=4;ctx.strokeStyle=css('--surface');ctx.strokeText(t,X,Y);ctx.fillStyle=css('--ink');ctx.fillText(t,X,Y);});
+}
+function legend(){const L=document.getElementById('legend');
+  const base='<span><i class="sw" style="background:var(--out)"></i>어느 주제에도 안 묶임</span><span><i class="solid"></i>자주 나오는 주제</span><span><i class="dash"></i>흔들리는 주제</span>';
+  if(mode==='g')L.innerHTML=G.map((g,k)=>`<span><i class="sw" style="background:var(--c${k+1})"></i>${esc(g)}</span>`).join('')+base;
+  else if(mode==='s')L.innerHTML=[5,4,3,2,1].map(k=>`<span><i class="sw" style="background:var(--s${k})"></i>${k===5?'거의 매번':k===1?'드물게':''} ${Math.round(k/5*100)}%</span>`).join('')+base;
+  else if(mode==='t')L.innerHTML='<span><i class="sw" style="background:var(--hl)"></i>주제로 묶인 발언</span>'+base;
+  else L.innerHTML=`<span><i class="sw" style="background:var(--hl)"></i>${esc(G[+mode])}</span><span><i class="sw" style="background:var(--dim)"></i>나머지</span>`;}
+const M=document.getElementById('mode');
+const btns=[]; if(NG<=3)btns.push(['g','집단별']); btns.push(['t','주제'],['s','안정도']);
+const GP=document.getElementById('gpanel'),GL=document.getElementById('glist');
+const setMode=k=>{mode=k;M.querySelectorAll('button[data-k]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.k===k));
+  GL.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.g===k));
+  const gb=document.getElementById('gbtn');if(gb){const on=/^\d+$/.test(k);gb.setAttribute('aria-pressed',on);gb.textContent=on?'집단: '+G[+k]+' ▾':'집단 강조 · '+NG+'개 ▾';}
+  legend();draw();};
+btns.forEach(([k,t])=>{const b=document.createElement('button');b.textContent=t;b.dataset.k=k;b.onclick=()=>setMode(k);M.appendChild(b);});
+if(NG>3){const b=document.createElement('button');b.id='gbtn';b.setAttribute('aria-expanded','false');b.setAttribute('aria-controls','gpanel');
+  b.onclick=()=>{GP.hidden=!GP.hidden;b.setAttribute('aria-expanded',!GP.hidden);if(!GP.hidden&&NG>12)document.getElementById('gfind').focus();};M.appendChild(b);
+  GL.innerHTML=G.map((g,i)=>`<button data-g="${i}">${esc(g)}</button>`).join('');
+  GL.querySelectorAll('button').forEach(x=>x.onclick=()=>setMode(mode===x.dataset.g?'t':x.dataset.g));
+  const f=document.getElementById('gfind');f.hidden=NG<=12;f.oninput=()=>{const q=f.value.trim().toLowerCase();GL.querySelectorAll('button').forEach(x=>{x.hidden=!!q&&!x.textContent.toLowerCase().includes(q)})};}
+setMode(mode);addEventListener('resize',draw);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw);
+cv.addEventListener('mousemove',e=>{const r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
+  let bi=-1,bd=100;P.forEach((p,i)=>{const d=(sx(p[0])-mx)**2+(sy(p[1])-my)**2;if(d<bd){bd=d;bi=i}});
+  if(bi<0){tip.style.display='none';return}const p=P[bi],c=CL[p[3]];
+  tip.innerHTML=c?`<b>${esc(tname(c))}</b><br>${fmt(c.n)}건 · ${NR}번 중 ${c.app}번 나옴<br>이 점: ${esc(G[p[2]])}`:`<b>어느 주제에도 안 묶임</b><br>이 점: ${esc(G[p[2]])}`;
+  tip.style.display='block';tip.style.left=Math.min(mx+14,r.width-270)+'px';tip.style.top=(my+14)+'px';});
+cv.addEventListener('mouseleave',()=>tip.style.display='none');
+
+// ── 2부
+const bar=(id,title,rows,max,unit)=>{document.getElementById(id).innerHTML=`<div class="note" style="color:var(--ink2)">${title}</div>`+
+ rows.map(([n,v,lab])=>`<div class="brow"><span class="n" title="${esc(n)}">${esc(n)}</span><span class="t"><span class="f" style="width:${Math.max(.5,v/(max||1)*100)}%"></span></span><span class="v">${lab??v+unit}</span></div>`).join('');};
+const ks=R.runs.map(r=>r.clusters), os=R.runs.map(r=>r.unclustered_pct);
+const drop=G.map(g=>C[g].dropped_pct);
+const mi=drop.indexOf(Math.max(...drop)), lo=drop.indexOf(Math.min(...drop));
+const stableN=R.clusters.filter(c=>!unstable(c)).length;
+document.getElementById('tiles').innerHTML=[
+ ['주제 수',`${Math.min(...ks)}–${Math.max(...ks)}개`,`${NR}번 돌린 범위 · 이 지도는 ${ks[0]}개`],
+ ['어느 주제에도 안 묶임',`${Math.min(...os)}–${Math.max(...os)}%`,'숨기지 않고 회색 점으로 둡니다'],
+ ['자주 다시 나온 주제',`${stableN} / ${R.clusters.length}`,`돌린 결과끼리 일치도(ARI) 평균 ${R.ari.mean}`],
+ ['가장 많이 빠진 집단',esc(GS[mi]),`정리 단계 탈락 ${drop[mi]}% · 가장 적은 ${esc(GS[lo])} ${drop[lo]}%`]
+].map(t=>`<div class="tile"><span class="l">${t[0]}</span><span class="v">${t[1]}</span><span class="s">${t[2]}</span></div>`).join('');
+document.getElementById('runs').innerHTML='<tr><th>회차</th><th>출발점 번호</th><th>주제 수</th><th>안 묶임</th></tr>'+
+ R.runs.map((r,i)=>`<tr><td>${i+1}${i===0?' (지도)':''}</td><td>${r.seed}</td><td>${r.clusters}</td><td>${r.unclustered_pct}%</td></tr>`).join('')+
+ `<tr><td colspan="4" style="text-align:left;color:var(--muted);white-space:normal">돌린 결과끼리 일치도(ARI) ${R.ari.min}–${R.ari.max}, 평균 ${R.ari.mean}. 1이면 같은 지도.</td></tr>`;
+const appc=[];for(let k=NR;k>=1;k--)appc.push([`${NR}번 중 ${k}번`,R.clusters.filter(c=>c.app===k).length]);
+bar('appbars','주제별 — 몇 번 다시 나왔나 (주제 수)',appc.map(([n,v])=>[n,v,String(v)]),Math.max(...appc.map(a=>a[1]),1),'');
+bar('dropbars','정리 단계 탈락률',G.map((g,i)=>[GS[i],drop[i]]),100,'%');
+bar('outbars','표본 중 어느 주제에도 안 묶인 비율',G.map((g,i)=>[GS[i],R.unclustered_by_group[i]]),100,'%');
+document.getElementById('droptab').innerHTML='<tr><th>집단</th><th>전체</th><th>짧음</th><th>중복</th><th>규칙으로 뺌</th><th>지정 제외<br><span class="note">작성자·열 값</span></th><th>남음</th></tr>'+
+ G.map(g=>`<tr><td>${esc(g)}</td><td>${fmt(C[g].total)}</td><td>${fmt(C[g].short)}</td><td>${fmt(C[g].dup)}</td><td>${fmt(C[g].rule||0)}</td><td>${fmt(C[g].excluded||0)}</td><td>${fmt(C[g].kept)}</td></tr>`).join('');
+
+// 규칙 · 차수
+const rb=document.getElementById('rulebody'), pr=R.preset, HIST=R.history||[];
+{let h=`<p>이 보고서는 <b>${R.round}차</b>입니다.`;
+ h+=pr?` 규칙 파일 <b>${esc(pr.name)} v${esc(pr.version)}</b> · 지문 <code>${esc(pr._sha256||'')}</code> · 패턴 ${(pr.exclude_patterns||[]).length}개.`:'';
+ h+=' 같은 자료에 같은 규칙 파일을 쓰면 같은 결과가 나옵니다.</p>';
+ if(!HIST.length&&!(pr&&(pr.exclude_patterns||[]).length))h+='<p>규칙 없이 길이와 중복만 걸렀습니다. 묶음을 읽고 「공론이 아닌」 것을 채점자들이 따로 고르면, 일치도를 재고 합의된 것으로 규칙 초안을 만들어 다음 차수를 돌립니다 — <code>who-was-heard rules-draft --reviews …</code></p>';
+ if(HIST.length){h+='<div class="tbl"><table><tr><th>차수</th><th>주제 수</th><th>쓴 규칙</th><th>그 뒤 사람이 뺀 묶음</th><th>채점자</th><th>일치도</th></tr>'+
+   HIST.map(x=>`<tr><td>${x.round}차</td><td>${x.clusters}</td><td>${esc(x.preset||'-')}${x.preset_sha?` <span class="note">${esc(x.preset_sha)}</span>`:''}</td><td class="w">${(x.excluded_after||[]).map(e=>`${e.id}(${esc((e.words||[]).slice(0,3).join(', '))})`).join(' · ')||'-'}${(x.split||[]).length?`<div class="note">엇갈림: ${x.split.map(sp=>`${sp.id} (${sp.exclude_votes}/${sp.of})`).join(' · ')}</div>`:''}</td><td>${(x.reviewers||[]).length||'-'}</td><td>${x.kappa!=null?`κ ${x.kappa} · ${x.percent_agreement}%`:'-'}</td></tr>`).join('')+
+   `<tr><td><b>${R.round}차</b></td><td>${R.clusters.length}</td><td>${esc(pr?pr.name:'-')}</td><td class="w note">(이 보고서)</td><td></td><td></td></tr></table></div>`;}
+ if(pr&&(pr.exclude_patterns||[]).length)h+=`<details><summary>패턴 전체 보기</summary><ol class="samp">${pr.exclude_patterns.map(p=>typeof p==='string'?`<li><code>${esc(p)}</code></li>`:`<li><code>${esc(p.pattern)}</code>${p.max_chars?` <span class="note">(${p.max_chars}자 미만 글에만)</span>`:''}</li>`).join('')}</ol></details>`;
+ h+='<p class="note">규칙으로 뺀 몫은 위 「누가 빠졌나」 표의 「규칙으로 뺌」 칸에 집단별로 있습니다.</p>';
+ rb.innerHTML=h;}
+
+// 소수 집중
+const cc=R.concentration||{};
+if(!Object.keys(cc).length)document.getElementById('concsec').style.display='none';
+else document.getElementById('conc').innerHTML='<tr><th>집단</th><th>작성자</th><th>상위 10명 몫</th><th>상위 1% 몫</th><th>지니</th><th>ID 빈칸</th></tr>'+
+ G.filter(g=>cc[g]).map(g=>`<tr><td>${esc(g)}</td><td>${fmt(cc[g].speakers)}명</td><td>${cc[g].top10_pct}%</td><td>${cc[g].top1pct_pct}% <span class="note">(${cc[g].top1pct_n}명)</span></td><td>${cc[g].gini}</td><td>${fmt(cc[g].blank)}</td></tr>`).join('');
+
+// 규모
+let wm='e';const WM=document.getElementById('wmode');
+[['e','표본판'],['p','원래 비율판']].forEach(([k,t])=>{const b=document.createElement('button');b.textContent=t;b.setAttribute('aria-pressed',k===wm);
+ b.onclick=()=>{wm=k;WM.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));wdraw();};WM.appendChild(b);});
+function wdraw(){const wt=i=>wm==='e'?1:R.popw[i];
+ const tot=R.points.reduce((s,p)=>s+wt(p[2]),0)||1;
+ const rows=sorted.slice(0,10).map(c=>[tname(c),+(c.comp.reduce((s,v,i)=>s+v*wt(i),0)/tot*100).toFixed(1)]);
+ bar('wbars',`큰 주제 10개의 몫 (${wm==='e'?'표본판':'원래 비율판'})`,rows,Math.max(...rows.map(r=>r[1]),1)*1.1,'%');}
+wdraw();
+
+document.getElementById('rec').innerHTML=R.choices.map(r=>`<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('');
+})();
+</script>
+<button class="totop" id="totop" aria-label="맨 위로" title="맨 위로">↑</button>
+<script>(function(){var b=document.getElementById('totop');addEventListener('scroll',function(){b.classList.toggle('on',scrollY>600)},{passive:true});
+b.onclick=function(){scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}})();</script>
+</body>
+</html>

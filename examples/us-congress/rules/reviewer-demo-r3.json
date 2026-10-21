@@ -1,0 +1,27 @@
+{
+  "reviewer": "demo (one reviewer, written while building the tool — not an independent second coder)",
+  "round": 3,
+  "labels": {
+    "18": "Homeland Security funding standoff (ICE, TSA)",
+    "16": "Tributes to people and communities",
+    "13": "War with Iran and war powers",
+    "9": "SAVE America Act and election rules",
+    "3": "Managers' remarks on bipartisan bills",
+    "6": "Senate motions and amendments (procedure)",
+    "4": "Housing and small-business bills",
+    "11": "Yielding for questions (procedure)",
+    "10": "Yielding time (procedure)",
+    "15": "Congratulating local teams and schools",
+    "7": "Senate scheduling (procedure)",
+    "1": "Aviation safety and the FAA",
+    "2": "Children in immigration detention",
+    "0": "Roll-call absence announcements (procedure)",
+    "12": "Sharia law bills",
+    "14": "Agriculture and farmers",
+    "5": "Defending American Property Abroad Act and other rules debates",
+    "17": "Debt, spending and a balanced-budget amendment",
+    "8": "Senate floor dispute over an objection"
+  },
+  "exclude": [6, 11, 10, 7, 0],
+  "notes": "Labels written after reading the internal report's samples. The five procedural clusters would be the input to a round-4 rules draft; this demo stops at round 3."
+}

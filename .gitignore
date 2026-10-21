@@ -1,0 +1,29 @@
+# ── 절대 올리지 않는 것 · never commit ──
+salt.txt
+_salt.txt
+*key*.txt
+*_key.txt
+*.env
+.env
+# 원자료·내려받은 자료 · raw and downloaded data
+_data/
+_cache/
+examples/*/_cache/
+examples/*/data/
+examples/polis/*.csv
+*.xlsx
+# 내부 검토판 (원문 포함) · internal reports contain raw text
+*_INTERNAL_do-not-share.*
+# 개인 대장 · your own ledger (the example ledger stays)
+servers/ledger/my-ledger/
+# 결과 폴더 기본 이름 · default output folder
+who-was-heard-report/
+# 실행 기록 · start/install logs
+_logs/
+# 파이썬 · python
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.venv/

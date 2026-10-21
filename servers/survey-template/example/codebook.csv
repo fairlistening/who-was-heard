@@ -1,0 +1,11 @@
+column,code,label,question
+camp,1,Camp A,(FICTIONAL) Which camp do you lean toward?
+camp,2,Camp B,(FICTIONAL) Which camp do you lean toward?
+camp,3,No camp,(FICTIONAL) Which camp do you lean toward?
+freq,1,Never,(FICTIONAL) How often do you watch political videos online?
+freq,2,Sometimes,(FICTIONAL) How often do you watch political videos online?
+freq,3,3+ days a week,(FICTIONAL) How often do you watch political videos online?
+Q1,1,Strongly agree,(FICTIONAL) Online live chats reflect public opinion.
+Q1,2,Somewhat agree,(FICTIONAL) Online live chats reflect public opinion.
+Q1,3,Somewhat disagree,(FICTIONAL) Online live chats reflect public opinion.
+Q1,4,Strongly disagree,(FICTIONAL) Online live chats reflect public opinion.

@@ -1,0 +1,12 @@
+who-was-heard — Fair Listening (고루듣기)
+Copyright 2026 Donghyeon Lee
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+Documentation in methods/ and the README files is licensed under
+Creative Commons Attribution 4.0 International (see LICENSE-docs).
+
+Example data:
+- examples/us-congress: the U.S. Congressional Record is a work of the
+  U.S. Government and is not subject to copyright (17 U.S.C. § 105).
+  Retrieved from govinfo.gov.
+- servers/survey-template/example: fictional data generated for demonstration.

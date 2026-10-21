@@ -1,0 +1,27 @@
+{
+  "reviewer": "demo (one reviewer, written while building the tool — not an independent second coder)",
+  "round": 1,
+  "exclude": [12, 7, 18, 2, 20, 16, 13, 6, 17, 22, 4, 21, 0, 3, 19, 1, 9],
+  "labels": {
+    "29": "DHS funding fight — ICE, TSA and the partial shutdown",
+    "27": "Tributes to constituents and staff",
+    "32": "War with Iran — war powers and strategy",
+    "10": "Elections — the SAVE America Act and voter ID",
+    "24": "Fisheries, wildlife and water bills",
+    "14": "Aviation safety and the FAA",
+    "8": "Education access bills",
+    "31": "Gas prices and cost of living after the Iran war",
+    "28": "Tributes — school sports championships",
+    "11": "Small business innovation programs",
+    "30": "Federal debt and spending",
+    "5": "Children in immigration detention (Dilley, TX)",
+    "23": "Protecting giant sequoias",
+    "26": "'Sharia-free America' resolution",
+    "25": "Agriculture and farmers",
+    "15": "Shivwits Band land leasing bill"
+  },
+  "notes": {
+    "excluded": "floor procedure — yielding time, unanimous-consent requests, cloture motions, quorum calls, adjournment, roll-call announcements, missed-vote statements, reading of bill or resolution text",
+    "kept_but_debatable": "27 and 28 are tributes, not deliberation; kept so that a second reviewer can decide"
+  }
+}

@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "who-was-heard"
+version = "0.1.0"
+description = "Fair Listening — tools for bringing public discourse together in the YouTube era, without losing the voices that get drowned out."
+readme = "README.en.md"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Donghyeon Lee" }]
+requires-python = ">=3.9"
+dependencies = ["numpy"]
+
+[project.optional-dependencies]
+full = ["sentence-transformers", "umap-learn", "hdbscan", "scikit-learn", "scipy", "openpyxl"]
+
+[project.scripts]
+who-was-heard = "whowasheard.cli:main"
+
+[tool.setuptools]
+packages = ["whowasheard"]
+
+[tool.setuptools.package-data]
+whowasheard = ["templates/*.html", "presets/*.json"]

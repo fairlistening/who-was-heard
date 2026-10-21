@@ -1,0 +1,23 @@
+{
+  "name": "us-congress",
+  "version": "1",
+  "description_ko": "미국 의회 회의록(Congressional Record)용. 의사진행 발언(만장일치 동의 요청, 발언권 양보 등)을 뺀다. 공인의 공개 발언이므로 원문 공개(public).",
+  "description_en": "For the U.S. Congressional Record. Removes procedural turns (unanimous-consent requests, yielding time, quorum calls). Public officials' on-record statements, so text policy is public.",
+  "text_policy": "public",
+  "min_chars": 300,
+  "dedup_prefix": 200,
+  "embed_max_chars": 1000,
+  "exclude_patterns": [
+    "^(Mr\\.|Madam) (President|Speaker), I ask unanimous consent",
+    "^(Mr\\.|Madam) (President|Speaker), I suggest the absence of a quorum",
+    "^(Mr\\.|Madam) (President|Speaker), I (yield|reserve)",
+    "^(Mr\\.|Madam) (President|Speaker), I move to (reconsider|table|adjourn|proceed)",
+    "^(Mr\\.|Madam) (President|Speaker), I have \\w+ requests? for committees? to meet",
+    "^(Mr\\.|Madam) (President|Speaker), on rollcall",
+    "^(Mr\\.|Madam) (President|Speaker), I was (unavoidably )?(absent|detained)",
+    "^(Mr\\.|Madam) (President|Speaker), I (rise|stand) (today )?to (honor|recognize|celebrate|congratulate|commemorate|pay tribute)",
+    "had I been present, I would have voted",
+    "Without objection, it is so ordered"
+  ],
+  "extra_stopwords": ["president", "speaker", "madam", "senator", "senators", "gentleman", "gentlewoman", "colleagues", "colleague", "yield", "floor", "today", "chamber", "congress", "senate", "house", "bill", "time", "going", "want", "know", "think", "said", "people", "make", "made", "year", "years", "also", "many", "every", "would", "should", "could", "like", "just", "very", "only", "because", "those", "these", "other", "over", "more", "much", "even", "must", "need", "take", "come", "back", "first", "last", "here", "being", "really", "thing", "things", "today's", "mr", "ms", "mrs"]
+}

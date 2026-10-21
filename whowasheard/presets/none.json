@@ -1,0 +1,11 @@
+{
+  "name": "none",
+  "version": "1",
+  "description_ko": "기본값. 길이·중복 외에는 아무것도 빼지 않는다. 원문은 공개판에 싣지 않는다(private).",
+  "description_en": "Default. Nothing removed beyond length and duplicates. Text is not published (private).",
+  "text_policy": "private",
+  "min_chars": 30,
+  "dedup_prefix": 200,
+  "exclude_patterns": [],
+  "extra_stopwords": []
+}
