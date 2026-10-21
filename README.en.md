@@ -15,6 +15,8 @@ This toolkit grew out of the Korean interactive series *YouTube Tribalism* (Hank
 
 Give it a table of texts (comments, speeches, petitions) with a group column (party, channel, region…). It writes **two reports**:
 
+> **Works without any AI app.** The whole analysis runs in the browser screen, with no generative AI (LLM), no outside AI service and no API key. One open embedding model turns texts into numbers on this computer. Connecting an AI app such as Claude over MCP is an **option** for working by chat.
+
 **Part 1 — What was discussed.** A map of the discourse: topics, their size, which groups raised them, representative statements and speakers (only for public officials' on-record statements), and a stability badge on every topic.
 
 **Part 2 — How far to trust this map.**
