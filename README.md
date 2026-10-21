@@ -111,4 +111,7 @@ who-was-heard report 자료.csv --text 내용 --group 채널 --speaker 작성자
 
 ## 연재
 
-한국일보 「유튜브 부족주의」(2026) — 링크는 공개 시점에 더한다.
+한국일보 「유튜브 부족주의」(2026)
+
+- 인터랙티브(한국어): <https://www.hankookilbo.com/interactive/youtubeTribalism/>
+- English edition: <https://www.hankookilbo.com/interactive/youtubeTribalism/pages/englishEdition.html>

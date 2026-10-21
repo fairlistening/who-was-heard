@@ -110,4 +110,7 @@ No raw chat messages, author hashes, survey microdata or interview transcripts f
 
 ## The series
 
-*YouTube Tribalism* — Hankook Ilbo (2026). Links: *(to be added at publication)*
+*YouTube Tribalism* — Hankook Ilbo (2026)
+
+- English edition: <https://www.hankookilbo.com/interactive/youtubeTribalism/pages/englishEdition.html>
+- Korean interactive: <https://www.hankookilbo.com/interactive/youtubeTribalism/>
