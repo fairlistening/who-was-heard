@@ -27,7 +27,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "servers"))
 sys.path.insert(0, HERE)
 NEEDED = ("numpy", "umap", "hdbscan", "sklearn", "sentence_transformers", "openpyxl")
-LOG_DIR = os.path.join(HERE, "_logs")
+# 설치판(파이썬 없이 도는 판)으로 돌고 있나 · running from the Python-free build?
+FROZEN = os.environ.get("WWH_FROZEN") == "1" or bool(getattr(sys, "frozen", False))
+LOG_DIR = os.path.join(os.path.expanduser("~"), ".who-was-heard", "logs") if FROZEN else os.path.join(HERE, "_logs")
 NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 STATE = {"installing": False, "install_error": False, "install_log": ""}
 
@@ -53,6 +55,8 @@ def missing():
 
 def install_in_background():
     """빠진 패키지를 창 없이 설치한다. 서버는 그동안에도 돈다."""
+    if FROZEN:  # 설치판에는 이미 다 들어 있다 · everything is bundled
+        return
     miss = missing()
     if not miss:
         return
@@ -87,6 +91,13 @@ def detach(argv):
     args = [a for a in argv if a != "--background"]
     exe = sys.executable
     kw = {"stdin": subprocess.DEVNULL, "stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL, "cwd": HERE}
+    if FROZEN:  # 설치판은 실행 파일 자체를 다시 띄운다 · relaunch the app itself
+        if sys.platform.startswith("win"):
+            kw["creationflags"] = NO_WINDOW | getattr(subprocess, "DETACHED_PROCESS", 0)
+        else:
+            kw["start_new_session"] = True
+        subprocess.Popen([exe] + args, **kw)
+        return
     if sys.platform.startswith("win"):
         w = os.path.join(os.path.dirname(exe), "pythonw.exe")
         exe = w if os.path.exists(w) else exe

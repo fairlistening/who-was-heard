@@ -47,6 +47,10 @@ def _python():
 
 
 def stdio_entry(name):
+    if os.environ.get("WWH_FROZEN") == "1":  # 설치판: 함께 든 명령줄 실행 파일로 · Python-free build
+        d = os.path.dirname(sys.executable)
+        cli = os.path.join(d, "who-was-heard-cli" + (".exe" if sys.platform.startswith("win") else ""))
+        return {"command": cli, "args": ["--stdio", name]}
     return {"command": _python(), "args": [os.path.join(HERE, name, "server.py")]}
 
 
