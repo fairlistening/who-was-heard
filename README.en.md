@@ -108,7 +108,7 @@ No raw chat messages, author hashes, survey microdata or interview transcripts f
 - `methods/kouchou-ai-source-notes.md` — what the public kouchou-ai code shows
 - `methods/preregistration/template.md` — pre-registration template
 - Code: Apache-2.0 (`LICENSE`). Docs: CC BY 4.0 (`LICENSE-docs`). © 2026 Donghyeon Lee.
-- This is an archival release; issues and pull requests are not being accepted.
+- This is an archival release. **Bug reports only** via [Issues](https://github.com/fairlistening/who-was-heard/issues) — no feature requests, pull requests or comments on the articles. Never paste raw texts from your data, internal reports or API keys into a report.
 
 ## The series
 

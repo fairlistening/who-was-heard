@@ -109,7 +109,7 @@ who-was-heard report 자료.csv --text 내용 --group 채널 --speaker 작성자
 - `methods/kouchou-ai-source-notes.md` — 광청AI 공개 코드에서 확인되는 것
 - `methods/preregistration/template.md` — 사전등록 틀
 - 코드 Apache-2.0(`LICENSE`) · 문서 CC BY 4.0(`LICENSE-docs`) · © 2026 Donghyeon Lee
-- 보존판이다. 이슈·풀 리퀘스트는 받지 않는다.
+- 보존판이다. **도구 오류 제보만** [Issues](https://github.com/fairlistening/who-was-heard/issues)로 받는다(기능 추가 요청·풀 리퀘스트·기사 내용에 대한 의견은 받지 않는다). 제보할 때 분석한 자료의 원문, 내부 검토판, API 키는 붙이지 않는다.
 
 ## 연재
 
