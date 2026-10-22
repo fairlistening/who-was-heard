@@ -1,0 +1,116 @@
+# 설치판(파이썬 없이 도는 판)을 윈도·맥에서 만들어 Releases에 붙인다.
+# Build the Python-free app on Windows and macOS and attach it to a GitHub Release.
+#
+# 돌리는 법 · how to run:  Actions 탭 → "Build installers" → Run workflow
+name: Build installers
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. v0.1.0)"
+        required: true
+        default: "v0.1.0"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            name: windows
+          - os: macos-latest
+            name: macos-arm64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies (CPU-only torch)
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          if [ "${{ matrix.name }}" = "windows" ]; then
+            pip install torch --index-url https://download.pytorch.org/whl/cpu
+          else
+            pip install torch
+          fi
+          pip install -e ".[full]" pyinstaller
+
+      - name: Unit tests
+        run: python -m unittest discover -s tests -q
+
+      - name: Build
+        run: pyinstaller packaging/who-was-heard.spec --noconfirm
+
+      - name: Smoke test (start, check /health, stop)
+        shell: bash
+        run: |
+          if [ "${{ matrix.name }}" = "windows" ]; then
+            EXE="dist/who-was-heard/who-was-heard-cli.exe"
+          else
+            EXE="dist/who-was-heard/who-was-heard-cli"
+          fi
+          "$EXE" --no-browser --port 8799 > smoke.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -s http://127.0.0.1:8799/health | grep -q who-was-heard; then echo "health ok"; break; fi
+            sleep 2
+          done
+          curl -s http://127.0.0.1:8799/health | grep -q who-was-heard || (cat smoke.log; exit 1)
+          python - <<'PY'
+          import json, urllib.request
+          req = urllib.request.Request("http://127.0.0.1:8799/listen-check/mcp",
+              json.dumps({"jsonrpc": "2.0", "id": 1, "method": "tools/list"}).encode(),
+              {"Content-Type": "application/json", "Accept": "application/json, text/event-stream"})
+          tools = json.load(urllib.request.urlopen(req, timeout=60))["result"]["tools"]
+          print("listen-check tools:", [t["name"] for t in tools])
+          assert any(t["name"] == "diagnose" for t in tools)
+          PY
+
+      - name: Zip
+        shell: bash
+        run: |
+          cd dist
+          if [ "${{ matrix.name }}" = "windows" ]; then
+            7z a -tzip ../who-was-heard-${{ matrix.name }}.zip who-was-heard
+          else
+            ditto -c -k --sequesterRsrc --keepParent who-was-heard.app ../who-was-heard-${{ matrix.name }}.zip
+          fi
+          ls -la ..
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: who-was-heard-${{ matrix.name }}
+          path: who-was-heard-${{ matrix.name }}.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: who-was-heard ${{ inputs.tag }} — 설치판 · Python-free build
+          body: |
+            파이썬 없이 도는 설치판입니다. 압축을 풀고 실행하세요. 임베딩 모델(약 1.1GB)은 처음 1차를 돌릴 때 받습니다.
+            The Python-free build. Unzip and run. The embedding model (about 1.1 GB) downloads on the first run.
+
+            - **Windows**: `who-was-heard-windows.zip` → 압축 풀기 → `who-was-heard.exe`. 「Windows의 PC 보호」가 뜨면 「추가 정보 → 실행」 (서명 없는 앱).
+              If "Windows protected your PC" appears, click "More info → Run anyway" (unsigned app).
+            - **macOS (Apple silicon)**: `who-was-heard-macos-arm64.zip` → 압축 풀기 → `who-was-heard.app`을 우클릭 → 열기 (서명 없는 앱).
+              Right-click → Open the first time (unsigned app).
+
+            사용법 · Usage: [docs/USAGE.md](https://github.com/fairlistening/who-was-heard/blob/main/docs/USAGE.md) · [docs/USAGE.en.md](https://github.com/fairlistening/who-was-heard/blob/main/docs/USAGE.en.md)
+          files: out/*.zip
