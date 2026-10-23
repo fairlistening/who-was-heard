@@ -34,6 +34,15 @@ ROOT = os.path.dirname(HERE)
 UA = "who-was-heard (local research tool)"
 
 
+def _quiet(fn, *args):
+    """예시 스크립트의 화면 출력을 버린다 — 윈도 영문 콘솔(cp1252)에서 「→」 같은 글자로 멈추지 않게.
+    Swallow the example scripts' console output so non-UTF-8 consoles (e.g. cp1252) can't crash a fetch."""
+    import contextlib
+    import io
+    with contextlib.redirect_stdout(io.StringIO()):
+        return fn(*args)
+
+
 def _example(rel, name):
     spec = importlib.util.spec_from_file_location(name, os.path.join(ROOT, "examples", rel))
     mod = importlib.util.module_from_spec(spec)
@@ -164,7 +173,7 @@ def korean_nanet(p, out, job, work):
     for k, src in enumerate(files):
         job["detail"] = f"{os.path.basename(src)} ({k + 1}/{len(files)})"
         tmp = out + f".part{k}.csv"
-        prep.main(src, tmp)
+        _quiet(prep.main, src, tmp)
         with open(tmp, encoding="utf-8") as f:
             rd = csv.DictReader(f)
             fields = fields or rd.fieldnames
@@ -199,7 +208,7 @@ def korean_nanet(p, out, job, work):
         _write(tmp_all, keep, fields)
         job["detail"] = "발언자 이름 추정 · inferring speaker names"
         names = out + ".names.csv"
-        infer.main(tmp_all, names)
+        _quiet(infer.main, tmp_all, names)
         with open(names, encoding="utf-8") as f:
             nm = {r["id"]: r["name"] for r in csv.DictReader(f)}
         os.remove(tmp_all)
