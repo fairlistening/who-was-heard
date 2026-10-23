@@ -4,6 +4,8 @@
 
 A step-by-step guide for first-time users: install, first report, repeated rounds, connecting AI apps, and troubleshooting.
 
+> **Works without any AI app.** The whole analysis runs in the browser screen, with no generative AI (LLM), no outside AI service and no API key. One open embedding model turns texts into numbers on this computer. Connecting an AI app such as Claude over MCP is an **option** for working by chat.
+
 ---
 
 ## 1. What you need
@@ -11,7 +13,7 @@ A step-by-step guide for first-time users: install, first report, repeated round
 | | |
 |---|---|
 | OS | Windows 10/11, macOS, Linux |
-| Python | 3.9 or later. On Windows, install from [python.org](https://www.python.org/downloads/) and **tick "Add python.exe to PATH"** |
+| Python | **Not needed with the installer build** (2-1 below). From source: 3.9 or later. On Windows, install from [python.org](https://www.python.org/downloads/) and **tick "Add python.exe to PATH"** |
 | Disk | about 3 GB — 1–2 GB of packages, about 1.1 GB for the sentence-embedding model |
 | Memory | 8 GB or more; 16 GB for data above 20,000 texts |
 | Internet | Only the first time (packages and model) and when fetching data. The analysis itself runs on your computer |
@@ -19,6 +21,19 @@ A step-by-step guide for first-time users: install, first report, repeated round
 No API key is required. You use your own key only to fetch from YouTube or the Korean National Assembly Open API.
 
 ## 2. Start
+
+### 2-1. Without Python — the installer build
+
+Download the zip for your computer from [Releases](https://github.com/fairlistening/who-was-heard/releases).
+
+| | |
+|---|---|
+| Windows | `who-was-heard-windows.zip` → unzip → **double-click `who-was-heard.exe`** in the folder. If "Windows protected your PC" appears, click **More info → Run anyway** (the app is unsigned) |
+| macOS (Apple silicon) | `who-was-heard-macos-arm64.zip` → unzip → **right-click `who-was-heard.app` → Open** (the first time) |
+
+The build contains everything the analysis needs (a few hundred MB); only the embedding model downloads on the first run. For troubleshooting, run `who-was-heard-cli` from the same folder to see the log. Logs are in `~/.who-was-heard/logs`.
+
+### 2-2. With Python — from source
 
 Download and unzip the repository (or `git clone` it), then:
 

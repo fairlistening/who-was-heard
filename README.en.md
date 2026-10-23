@@ -34,7 +34,9 @@ By default the **public report** contains no raw texts (they are included only w
 
 ## The easiest way — the analysis screen
 
-Double-click `start.pyw` (`start.command` on macOS) and click **Analyze →** on the setup page. Six steps in the browser. **New here? Start with the [usage guide](docs/USAGE.en.md).**
+**No Python needed:** download the Windows or macOS build from [Releases](https://github.com/fairlistening/who-was-heard/releases), unzip, and run `who-was-heard.exe` (or `who-was-heard.app`). The app is unsigned, so the first launch shows a warning — on Windows click "More info → Run anyway"; on macOS right-click → Open.
+
+Run the installer build — or, with Python, double-click `start.pyw` (`start.command` on macOS) — and click **Analyze →** on the setup page. Six steps in the browser. **New here? Start with the [usage guide](docs/USAGE.en.md).**
 
 1. **Data** — upload a CSV, TSV or XLSX, or type its path — or **fetch directly**: U.S. Congressional Record (govinfo), Korean National Assembly minutes (NANET datasets or Open API), YouTube comments and live chat (your own API key; author IDs hashed), Polis, or any URL (files as tables, pages as paragraphs). Only column names, fill counts and average lengths are shown first.
 2. **Settings** — text, group and author columns; text policy (no texts / texts without authors / public officials with names); details such as sample size, values to drop and cluster selection.
